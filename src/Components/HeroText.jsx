@@ -3,7 +3,7 @@ import { m, LazyMotion, domAnimation } from "framer-motion";
 import Typed from "./elements/Typed";
 
 const HeroText = () => {
-  const name = "suhail ?";
+  const name = "suhail ";
 
 
 
