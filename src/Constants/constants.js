@@ -110,7 +110,7 @@ const projects = [
     description: 'Developed a sleek full-stack web app for a company, streamlining invoice printing and management while ensuring secure data storage in the database.',
     image: InvoiceGenerator,
     video_link: 'NoVideo.webm', // Add the video link here
-    source_code_link: '',
+    source_code_link: 'https://github.com/mohammedsuhailkh/invoice-generator',
     demo_link: ' ',
   },
   {
