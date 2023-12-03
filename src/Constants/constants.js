@@ -90,10 +90,10 @@ export const navLinks = [
     id: 'skills',
     title: 'Skills',
   },
-  {
-    id: 'contact',
-    title: 'Contact',
-  },
+  // {
+  //   id: 'contact',
+  //   title: 'Contact',
+  // },
 ];
 
 const projects = [

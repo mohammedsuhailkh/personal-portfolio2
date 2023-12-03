@@ -17,7 +17,7 @@ const Navbar = () => {
       fixed top-0 z-20 bg-primary
     `}
     >
-      <div className="w-full flex justify-between items-center max-w-7x1 mx-auto">
+      <div className="w-full flex justify-between items-center max-w-7x1 mx-auto" style={{ color: '#FFFFFF' }}>
         <Link
           to="/"
           className="flex items-center gap-2"
@@ -64,7 +64,7 @@ const Navbar = () => {
                     key={link.id}
                     className={`${
                       active === link.title ? "text-white" : "text-secondary"
-                    } font-poppins font-medium cursor-pointer text-[16px]`}
+                    } font-poppins font-medium cursor-pointer text-white text-[16px]`}
                     onClick={() => {
                       setActive(link.title);
                       setToggle(!toggle);

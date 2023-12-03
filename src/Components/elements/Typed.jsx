@@ -7,11 +7,11 @@ const TypedText = () => {
   useEffect(() => {
     const options = {
       strings: [
-        'Frontend Developer',
-        'CyberSecurity specialist',
+        'Unity Developer',
+        'CyberSecurity enthusiast',
         'UI-designer',
         'Web Developer',
-        'Music Lover',
+        
       ],
       typeSpeed: 50,
       backSpeed: 10,
