@@ -32,6 +32,7 @@ import menu from './menu.svg';
 
 // Projects
 import Nesco from './projects/Nesco.jpg';
+import InvoiceGenerator from './projects/InvoiceGenerator.png';
 import Netflix from './projects/Netflix.png';
 import summariser from './projects/summariser.png';
 import designer from './projects/designer.png';
@@ -44,6 +45,7 @@ export {
   close,
   htmlIcon,
   FirebaseIcon,
+  InvoiceGenerator,
   cssIcon,
   jsIcon,
   reactIcon,

@@ -29,6 +29,7 @@ import {
 
   figmaIcon,
   Nesco,
+  InvoiceGenerator,
   Netflix,
   summariser,
   avatar,
@@ -100,13 +101,23 @@ const projects = [
     name: "Nesco Ice Creams",
     description: 'Developed a static website for an Ice Cream manufacturing company to effectively showcase their range of products and essential company information',
     image: Nesco,
+    video_link: 'NoVideo.webm', // Add the video link here
     source_code_link: '',
     demo_link: 'https://nescoicecream.com/',
+  },
+  {
+    name: "Invoice Generator",
+    description: 'Developed a sleek full-stack web app for a company, streamlining invoice printing and management while ensuring secure data storage in the database.',
+    image: InvoiceGenerator,
+    video_link: 'NoVideo.webm', // Add the video link here
+    source_code_link: '',
+    demo_link: ' ',
   },
   {
     name: 'Netflix Clone',
     description: 'Crafted using React.js, Firebase, and the dynamic TMDB API, this project showcases a meticulously crafted Netflix clone.',
     image: Netflix,
+    video_link: 'NoVideo.webm', // Add the video link here
     source_code_link: 'https://github.com/mohammedsuhailkh/netflix-clone',
     demo_link: '',
   },
@@ -114,19 +125,20 @@ const projects = [
     name: 'ShortnIt',
     description: 'Experience an advanced web application driven by AI for effortless information extraction. Simply paste an article link, and let the intelligent summarizer condense the content, providing you with concise insights.',
     image: summariser,
+    video_link: 'ShortnItV.webm', // Add the video link here
     source_code_link: 'https://github.com/mohammedsuhailkh/summarizer',
     demo_link: 'https://summarizer-bice.vercel.app/',
   },
   {
     name: 'Designer',
-    description: "This project features an interactive shirt designer powered by Three.js and OpenAI API for enhanced customization. Users can design shirts using 3D models, while OpenAI integration ensures seamless interaction for a dynamic design experience.",
+    description: "This project features an interactive shirt designer powered by Three.js and OpenAI API for enhanced customization. Users can design shirts using 3D models, while OpenAI integration ensures seamless interaction.",
     image: designer,
+    video_link: 'NoVideo.webm', // Add the video link here
     source_code_link: 'https://github.com/mohammedsuhailkh/AI-3d_Shirt_designer',
     demo_link: 'https://designer-deploy-build.vercel.app/',
   },
-  
-
 ];
+
 
 const memoji = {
   image: [avatar],
