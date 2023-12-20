@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { projects } from '../Constants/constants';
 import SectionTitle from './SectionTitle';
 
-// ... (your imports)
 
 const ProjectCards = () => {
   const [hoveredProject, setHoveredProject] = useState(null);
@@ -22,16 +21,16 @@ const ProjectCards = () => {
     setVideoDimensions({ width: 0, height: 0 });
   };
 
-  const fixedVideoHeight = 320; // Set the desired fixed height for all videos
+  const fixedVideoHeight = 320; 
 
   return (
-    <div className="container mx-auto py-15 text-white" id='projects'>
+    <div className="container mx-auto py-15 text-white "  id='projects'>
        <SectionTitle title="PROJECTS" subtitle="What I have done so far" />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
         {projects.map((project) => (
           <div
             key={project.id}
-            className="bg-white p-6 rounded-lg shadow-lg bg-white text-black relative" // Add relative positioning
+            className="bg-white p-6 rounded-lg shadow-lg bg-white text-black relative" 
             onMouseEnter={() => handleMouseEnter(project)}
             onMouseLeave={handleMouseLeave}
           >
@@ -47,15 +46,16 @@ const ProjectCards = () => {
                   className="object-cover rounded-lg absolute top-0 left-0"
                   style={{
                     width: `${videoDimensions.width}px`,
-                    height: `${fixedVideoHeight}px`, // Set a fixed height
+                    height: `${fixedVideoHeight}px`,
                     objectFit: 'cover',
                   }}
                   autoPlay
                   loop
                   controls
+                  
                 >
                   <source src={project.video_link} type="video/mp4" />
-                  Your browser does not support the video tag.
+                  Your browser does not support the video format
                 </video>
               )}
             </div>

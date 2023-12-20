@@ -28,14 +28,17 @@ import {
   nodeIcon,
 
   figmaIcon,
-  Nesco,
+  pboost,
   InvoiceGenerator,
-  Netflix,
+  monster,
+  mario,
   summariser,
   avatar,
   FirebaseIcon,
   burpsuiteIcon,
   designer,
+  runner,
+  aargon
 } from '../assets';
 
 library.add(faX, faBars, faWindowRestore, faBagShopping, faDiceD6);
@@ -98,29 +101,55 @@ export const navLinks = [
 
 const projects = [
   {
-    name: "Nesco Ice Creams",
-    description: 'Developed a static website for an Ice Cream manufacturing company to effectively showcase their range of products and essential company information',
-    image: Nesco,
-    video_link: 'NoVideo.webm', // Add the video link here
-    source_code_link: '',
-    demo_link: 'https://nescoicecream.com/',
+    name: 'Aargon Assault (Coming Soon)',
+    description: 'Crafted a game in Unity where there is a spaceship representing us, and our objective is to shoot down the enemy ships in order to win..',
+    image: aargon,
+    video_link: 'aargon.mp4', // Add the video link here
+    source_code_link: 'https://github.com/mohammedsuhailkh/',
+    demo_link: '',
+  },
+  {
+    name: "StarShip Stride",
+    description: 'Developed a game in which "We pilot a spaceship through a course of obstacles, striving to land safely on the designated finishing rock without encountering any obstacles to achieve victory."',
+    image: pboost,
+    video_link: 'starshipstride.mp4', // Add the video link here
+    source_code_link: 'https://github.com/mohammedsuhailkh/starship-stride',
+    demo_link: ' ',
+  },
+
+  {
+    name: 'Monster Chase',
+    description: 'Created a game in which We control a player tasked with jumping over monsters to secure victory; touching them results in defeat.',
+    image: monster,
+    video_link: 'monster.mp4', // Add the video link here
+    source_code_link: 'https://github.com/mohammedsuhailkh/monster-escape-unity3D',
+    demo_link: '',
+  },
+  {
+    name: 'Mario Clone',
+    description: 'Designed and crafted a Mario-inspired game with a comprehensive set of basic features.',
+    image: mario,
+    video_link: 'mario.mp4', // Add the video link here
+    source_code_link: 'https://github.com/mohammedsuhailkh/mario-clone',
+    demo_link: '',
+  },
+  {
+    name: 'Infinite Runner',
+    description: 'Developed an immersive endless runner game that puts players on a thrilling quest to collect coins while skillfully avoiding obstacles.',
+    image: runner,
+    video_link: 'runner.mp4', // Add the video link here
+    source_code_link: 'https://github.com/mohammedsuhailkh/infinite-runner',
+    demo_link: '',
   },
   {
     name: "Invoice Generator",
     description: 'Developed a sleek full-stack web app for a company, streamlining invoice printing and management while ensuring secure data storage in the database.',
     image: InvoiceGenerator,
-    video_link: 'NoVideo.webm', // Add the video link here
+    video_link: '', // Add the video link here
     source_code_link: 'https://github.com/mohammedsuhailkh/invoice-generator',
     demo_link: ' ',
   },
-  {
-    name: 'Netflix Clone',
-    description: 'Crafted using React.js, Firebase, and the dynamic TMDB API, this project showcases a meticulously crafted Netflix clone.',
-    image: Netflix,
-    video_link: 'NoVideo.webm', // Add the video link here
-    source_code_link: 'https://github.com/mohammedsuhailkh/netflix-clone',
-    demo_link: '',
-  },
+
   {
     name: 'ShortnIt',
     description: 'Experience an advanced web application driven by AI for effortless information extraction. Simply paste an article link, and let the intelligent summarizer condense the content, providing you with concise insights.',
@@ -133,7 +162,7 @@ const projects = [
     name: 'Designer',
     description: "This project features an interactive shirt designer powered by Three.js and OpenAI API for enhanced customization. Users can design shirts using 3D models, while OpenAI integration ensures seamless interaction.",
     image: designer,
-    video_link: 'NoVideo.webm', // Add the video link here
+    video_link: '', // Add the video link here
     source_code_link: 'https://github.com/mohammedsuhailkh/AI-3d_Shirt_designer',
     demo_link: 'https://designer-deploy-build.vercel.app/',
   },
