@@ -134,7 +134,7 @@ const projects = [
     demo_link: '',
   },
   {
-    name: 'Infinite Runner',
+    name: 'Coin Rush',
     description: 'Developed an immersive endless runner game that puts players on a thrilling quest to collect coins while skillfully avoiding obstacles.',
     image: runner,
     video_link: 'runner.mp4', // Add the video link here
