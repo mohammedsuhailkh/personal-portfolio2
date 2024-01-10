@@ -101,7 +101,7 @@ export const navLinks = [
 
 const projects = [
   {
-    name: 'Aargon Assault (Coming Soon)',
+    name: 'Aargon Assault',
     description: 'Crafted a game in Unity where there is a spaceship representing us, and our objective is to shoot down the enemy ships in order to win..',
     image: aargon,
     video_link: 'aargon.webm', // Add the video link here
