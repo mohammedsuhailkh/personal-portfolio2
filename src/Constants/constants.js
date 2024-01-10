@@ -104,7 +104,7 @@ const projects = [
     name: 'Aargon Assault (Coming Soon)',
     description: 'Crafted a game in Unity where there is a spaceship representing us, and our objective is to shoot down the enemy ships in order to win..',
     image: aargon,
-    video_link: 'aargon.mp4', // Add the video link here
+    video_link: 'aargon.webm', // Add the video link here
     source_code_link: 'https://github.com/mohammedsuhailkh/',
     demo_link: '',
   },

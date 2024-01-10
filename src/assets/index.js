@@ -1,11 +1,3 @@
-/*
-   Copyright (C), 2023-2024, Sara Echeverria (bl33h)
-   Author: Sara Echeverria
-   FileName: index.js
-   Version: I
-   Creation: 02/06/2023
-   Last modification: 03/06/2023
-*/
 
 // Logo
 import bl33hIcon from './logo/bl33hIcon.png';
