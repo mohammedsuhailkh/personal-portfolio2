@@ -31,6 +31,9 @@ import runner from './projects/runner.png';
 import aargon from './projects/aargon.png';
 import summariser from './projects/summariser.png';
 import designer from './projects/designer.png';
+import towerbash from './projects/towerbash.png';
+import dumbledash from './projects/dumbledash.png';
+
 
 // Avatar
 import avatar from './avatar/avatar.png';
@@ -62,5 +65,7 @@ export {
   bl33hIcon,
   mario,
   runner,
-  aargon
+  aargon,
+  towerbash,
+  dumbledash
 };

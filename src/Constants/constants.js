@@ -38,7 +38,9 @@ import {
   burpsuiteIcon,
   designer,
   runner,
-  aargon
+  aargon,
+  towerbash,
+  dumbledash
 } from '../assets';
 
 library.add(faX, faBars, faWindowRestore, faBagShopping, faDiceD6);
@@ -100,6 +102,22 @@ export const navLinks = [
 ];
 
 const projects = [
+  {
+    name: "Dumble's Adventure (Coming Soon)",
+    description: 'Get ready for an adventerous spiders journey on a magical land  ',
+    image: dumbledash,
+    video_link: 'dumbledash.webm', // Add the video link here
+    source_code_link: 'https://github.com/mohammedsuhailkh/',
+    demo_link: '',
+  },
+  {
+    name: 'Tower Bash',
+    description: 'Tower Bash is a captivating tower defense game set in a vibrant fantasy world. Strategically place towers, unleash powerful cannons, and defend your kingdom against relentless waves of enemies',
+    image: towerbash,
+    video_link: 'towerbash.mp4', // Add the video link here
+    source_code_link: 'https://github.com/mohammedsuhailkh/',
+    demo_link: '',
+  },
   {
     name: 'Aargon Assault',
     description: 'Crafted a game in Unity where there is a spaceship representing us, and our objective is to shoot down the enemy ships in order to win..',
