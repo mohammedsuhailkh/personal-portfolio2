@@ -33,6 +33,7 @@ import summariser from './projects/summariser.png';
 import designer from './projects/designer.png';
 import towerbash from './projects/towerbash.png';
 import dumbledash from './projects/dumbledash.png';
+import downtown from './projects/downtown.png';
 
 
 // Avatar
@@ -67,5 +68,6 @@ export {
   runner,
   aargon,
   towerbash,
-  dumbledash
+  dumbledash,
+  downtown
 };

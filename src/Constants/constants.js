@@ -40,7 +40,8 @@ import {
   runner,
   aargon,
   towerbash,
-  dumbledash
+  dumbledash,
+  downtown
 } from '../assets';
 
 library.add(faX, faBars, faWindowRestore, faBagShopping, faDiceD6);
@@ -107,6 +108,14 @@ const projects = [
     description: 'Get ready for an adventerous spiders journey on a magical land  ',
     image: dumbledash,
     video_link: 'dumbledash.webm', // Add the video link here
+    source_code_link: 'https://github.com/mohammedsuhailkh/',
+    demo_link: '',
+  },
+  {
+    name: "Downtown Appocalypse",
+    description: 'The game commences with a soldier tasked with eliminating all zombies and rescuing an abandoned young girl. ',
+    image: downtown,
+    video_link: 'downtown.mp4', // Add the video link here
     source_code_link: 'https://github.com/mohammedsuhailkh/',
     demo_link: '',
   },
