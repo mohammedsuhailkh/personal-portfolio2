@@ -104,7 +104,7 @@ export const navLinks = [
 
 const projects = [
   {
-    name: "Valeria (In Production)",
+    name: "Valeria (In Production )",
     description: 'Valeria is a survival-action game where a young girl navigates a desolate, creature-infested island to uncover the truth behind her abandonment and fight for her life.  ',
     image: dumbledash,
     video_link: 'dumbledash.mp4', // Add the video link here
