@@ -112,7 +112,7 @@ const projects = [
     demo_link: '',
   },
   {
-    name: "AereA",
+    name: "AereA (WINDOWS / NINTENDO SWITCH)",
     description: 'AereA is a music-themed action RPG where players battle enemies and retrieve stolen instruments to restore harmony. ',
     image: downtown,
     video_link: 'downtown.mp4', // Add the video link here
@@ -120,8 +120,8 @@ const projects = [
     demo_link: '',
   },
   {
-    name: 'Tower Bash',
-    description: 'Tower Bash is a captivating tower defense game . Strategically place towers, unleash powerful cannons, and defend your kingdom against relentless waves of enemies',
+    name: 'Truck Driver (WINDOWS / MAC / ANDROID)',
+    description: 'The game offers an authentic driving experience with realistic truck handling, diverse environments, changing weather conditions, and a day-night cycle. Players can upgrade and customize their trucks, tackle over 80 restoration missions, and engage in unlimited parking challenges.',
     image: towerbash,
     video_link: 'towerbash.mp4', // Add the video link here
     source_code_link: 'https://github.com/mohammedsuhailkh/',
@@ -136,7 +136,7 @@ const projects = [
     demo_link: '',
   },
   {
-    name: "StarShip Stride",
+    name: "StarShip Stride (WebGL)",
     description: 'Developed a game in which "We pilot a spaceship through a course of obstacles, striving to land safely on the designated finishing rock without encountering any obstacles to achieve victory."',
     image: pboost,
     video_link: 'starshipstride.mp4', // Add the video link here
@@ -145,29 +145,29 @@ const projects = [
   },
 
   {
-    name: 'Monster Chase',
-    description: 'Created a game in which We control a player tasked with jumping over monsters to secure victory; touching them results in defeat.',
+    name: 'Food Truck Shef (WINDOWS)',
+    description: 'Master the kitchen: Upgrade your food truck, serve hungry customers, and become a top chef! Time management is key as you cook, serve, and manage your way to success. ',
     image: monster,
     video_link: 'monster.mp4', // Add the video link here
     source_code_link: 'https://github.com/mohammedsuhailkh/monster-escape-unity3D',
     demo_link: '',
   },
-  {
-    name: 'Mario Clone',
-    description: 'Designed and crafted a Mario-inspired game with a comprehensive set of basic features.',
-    image: mario,
-    video_link: 'mario.mp4', // Add the video link here
-    source_code_link: 'https://github.com/mohammedsuhailkh/mario-clone',
-    demo_link: '',
-  },
-  {
-    name: 'Coin Rush',
-    description: 'Developed an immersive endless runner game that puts players on a thrilling quest to collect coins while skillfully avoiding obstacles.',
-    image: runner,
-    video_link: 'runner.mp4', // Add the video link here
-    source_code_link: 'https://github.com/mohammedsuhailkh/infinite-runner',
-    demo_link: '',
-  },
+  // {
+  //   name: 'Mario Clone',
+  //   description: 'Designed and crafted a Mario-inspired game with a comprehensive set of basic features.',
+  //   image: mario,
+  //   video_link: 'mario.mp4', // Add the video link here
+  //   source_code_link: 'https://github.com/mohammedsuhailkh/mario-clone',
+  //   demo_link: '',
+  // },
+  // {
+  //   name: 'Coin Rush',
+  //   description: 'Developed an immersive endless runner game that puts players on a thrilling quest to collect coins while skillfully avoiding obstacles.',
+  //   image: runner,
+  //   video_link: 'runner.mp4', // Add the video link here
+  //   source_code_link: 'https://github.com/mohammedsuhailkh/infinite-runner',
+  //   demo_link: '',
+  // },
   {
     name: "Invoice Generator",
     description: 'Developed a sleek full-stack web app for a company, streamlining invoice printing and management while ensuring secure data storage in the database.',
