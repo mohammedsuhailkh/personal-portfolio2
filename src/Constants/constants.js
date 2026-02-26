@@ -41,7 +41,8 @@ import {
   aargon,
   towerbash,
   dumbledash,
-  downtown
+  downtown,
+  os
 } from '../assets';
 
 library.add(faX, faBars, faWindowRestore, faBagShopping, faDiceD6);
@@ -108,6 +109,14 @@ const projects = [
     description: 'Valeria is a survival-action game where a young girl navigates a desolate, creature-infested island to uncover the truth behind her abandonment and fight for her life.  ',
     image: dumbledash,
     video_link: 'dumbledash.mp4', // Add the video link here
+    source_code_link: 'https://github.com/mohammedsuhailkh/',
+    demo_link: '',
+  },
+  {
+    name: "Orange Season ( PS5 )",
+    description: 'Make your farmers dream come true in the charming village of Orange Town. Grow crops, raise animals, fish, and mine to build a successful and profitable farm.  ',
+    image: os,
+    video_link: 'OS.mp4', // Add the video link here
     source_code_link: 'https://github.com/mohammedsuhailkh/',
     demo_link: '',
   },

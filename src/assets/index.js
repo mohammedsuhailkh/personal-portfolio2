@@ -34,6 +34,7 @@ import designer from './projects/designer.png';
 import towerbash from './projects/towerbash.png';
 import dumbledash from './projects/dumbledash.png';
 import downtown from './projects/downtown.png';
+import os from './projects/OS.png';
 
 
 // Avatar
@@ -69,5 +70,6 @@ export {
   aargon,
   towerbash,
   dumbledash,
-  downtown
+  downtown,
+  os
 };

@@ -2,30 +2,40 @@ import React, { useEffect, useRef } from 'react';
 import Typed from 'typed.js';
 
 const TypedText = () => {
-  const typedRef = useRef(null);
+  const typedRef  = useRef(null);
+  const typedInst = useRef(null);
 
+  // Parent (HeroText) mounts this only after heroGameEnd.
   useEffect(() => {
-    const options = {
-      strings: [
-        'Unity Developer',
-        'CyberSecurity enthusiast',
-        'UI-designer',
-        'Web Developer',
-        
-      ],
-      typeSpeed: 50,
-      backSpeed: 10,
-      loop: true,
-    };
+    if (!typedRef.current) return undefined;
 
-    const typed = new Typed(typedRef.current, options);
+    const id = setTimeout(() => {
+      typedInst.current = new Typed(typedRef.current, {
+        strings: [
+          'Unity Game Developer',
+          'CyberSecurity Enthusiast',
+          'UI Designer',
+          'Web Developer',
+        ],
+        typeSpeed: 55,
+        backSpeed: 30,
+        backDelay: 2000,
+        loop: true,
+      });
+    }, 600);
 
     return () => {
-      typed.destroy();
+      clearTimeout(id);
+      typedInst.current?.destroy();
     };
   }, []);
 
-  return <span style={{ fontSize: 'larger', fontWeight: 'bolder'}} ref={typedRef} />;
+  return (
+    <span
+      ref={typedRef}
+      style={{ fontSize: 'larger', fontWeight: 'bolder' }}
+    />
+  );
 };
 
 export default TypedText;

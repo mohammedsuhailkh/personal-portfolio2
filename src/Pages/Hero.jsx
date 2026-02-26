@@ -16,7 +16,7 @@ const Hero = () => {
         <HeroText />
         <HeroParticles />
       </m.div>
-      <HeroScroller />
+      {/* <HeroScroller /> */}
     </LazyMotion>
     </div>
   );

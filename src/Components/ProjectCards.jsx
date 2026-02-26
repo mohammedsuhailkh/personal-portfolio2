@@ -25,7 +25,7 @@ const ProjectCards = () => {
 
   return (
     <div className="container mx-auto py-15 text-white "  id='projects'>
-       <SectionTitle title="PROJECTS" subtitle="What I have done so far" />
+       <SectionTitle title="PROJECTS I WORKED ON" subtitle="What I have done so far" />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
         {projects.map((project) => (
           <div
