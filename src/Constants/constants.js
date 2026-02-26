@@ -112,7 +112,7 @@ const projects = [
     demo_link: '',
   },
   {
-    name: "AereA (WINDOWS / NINTENDO SWITCH / PS5 / XBOX)",
+    name: "AereA (WINDOWS / NINTENDO SWITCH / PS5 / XBOX )",
     description: 'AereA is a music-themed action RPG where players battle enemies and retrieve stolen instruments to restore harmony. ',
     image: downtown,
     video_link: 'downtown.mp4', // Add the video link here
