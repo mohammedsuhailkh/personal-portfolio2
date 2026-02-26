@@ -104,63 +104,63 @@ export const navLinks = [
 ];
 
 const projects = [
-  {
-    name: "Valeria (In Production )",
-    description: 'Valeria is a survival-action game where a young girl navigates a desolate, creature-infested island to uncover the truth behind her abandonment and fight for her life.  ',
-    image: dumbledash,
-    video_link: 'dumbledash.mp4', // Add the video link here
-    source_code_link: 'https://github.com/mohammedsuhailkh/',
-    demo_link: '',
-  },
-  {
-    name: "Orange Season ( PS5 )",
-    description: 'Make your farmers dream come true in the charming village of Orange Town. Grow crops, raise animals, fish, and mine to build a successful and profitable farm.  ',
-    image: os,
-    video_link: 'OS.mp4', // Add the video link here
-    source_code_link: 'https://github.com/mohammedsuhailkh/',
-    demo_link: '',
-  },
-  {
-    name: "AereA (WINDOWS / NINTENDO SWITCH / PS5 / XBOX )",
-    description: 'AereA is a music-themed action RPG where players battle enemies and retrieve stolen instruments to restore harmony. ',
-    image: downtown,
-    video_link: 'downtown.mp4', // Add the video link here
-    source_code_link: 'https://github.com/mohammedsuhailkh/',
-    demo_link: '',
-  },
-  {
-    name: 'Truck Driver (WINDOWS / MAC / ANDROID / SWITCH)',
-    description: 'The game offers an authentic driving experience with realistic truck handling, diverse environments, changing weather conditions, and a day-night cycle. Players can upgrade and customize their trucks, tackle over 80 restoration missions, and engage in unlimited parking challenges.',
-    image: towerbash,
-    video_link: 'towerbash.mp4', // Add the video link here
-    source_code_link: 'https://github.com/mohammedsuhailkh/',
-    demo_link: '',
-  },
-  {
-    name: 'VR Chemlab',
-    description: 'VR Chemlab allows users to safely perform and explore experiments in an immersive, interactive virtual environment, enhancing learning and engagement.',
-    image: aargon,
-    video_link: 'aargon.mp4', // Add the video link here
-    source_code_link: 'https://github.com/mohammedsuhailkh/',
-    demo_link: '',
-  },
-  {
-    name: "StarShip Stride (WebGL)",
-    description: 'Developed a game in which "We pilot a spaceship through a course of obstacles, striving to land safely on the designated finishing rock without encountering any obstacles to achieve victory."',
-    image: pboost,
-    video_link: 'starshipstride.mp4', // Add the video link here
-    source_code_link: 'https://github.com/mohammedsuhailkh/starship-stride',
-    demo_link: ' ',
-  },
+{
+  name: "Valeria (In Production)",
+  description: "Valeria is a survival-action game fully designed and developed by me as a solo project. I implemented all core gameplay systems including player movement and combat mechanics, survival systems, enemy AI behaviors, interaction systems, game progression logic, UI implementation, and environment setup. The project showcases my ability to independently build complete gameplay mechanics and integrate them into a cohesive survival experience using Unity.",
+  image: dumbledash,
+  video_link: "dumbledash.mp4",
+  source_code_link: "https://github.com/mohammedsuhailkh/",
+  demo_link: "",
+},
+{
+  name: "Orange Season 2 (PS5)",
+  description: "Orange Season is a farming simulation game for PS5 where I contributed by implementing the complete tractor system, including vehicle control and dynamic switching between multiple farming tools. I also worked on fully implementing the inventory system, handling item management, interactions, and gameplay integration to support core farming mechanics.",
+  image: os,
+  video_link: "OS.mp4",
+  source_code_link: "https://github.com/mohammedsuhailkh/",
+  demo_link: "",
+},
+{
+  name: "AereA (WINDOWS / NINTENDO SWITCH / PS5 / XBOX)",
+  description: "AereA is a music-themed action RPG where I was responsible for fully porting the game across multiple platforms including Windows, Nintendo Switch, PS5, and Xbox. I handled platform adaptation, build configuration, optimization, and compatibility implementation, while also managing ongoing maintenance, updates, and technical stability of the entire game across all supported platforms.",
+  image: downtown,
+  video_link: "downtown.mp4",
+  source_code_link: "https://github.com/mohammedsuhailkh/",
+  demo_link: "",
+},
+{
+  name: "Truck Driver (WINDOWS / MAC / ANDROID / SWITCH)",
+  description: "Truck Driver is a realistic driving simulation game where I contributed by handling cross-platform porting across Windows, Mac, Android, and Nintendo Switch. My work focused on bug fixing, platform-specific issue resolution, performance improvements, and stability optimization, along with contributing to the implementation and support of downloadable content (DLC) features.",
+  image: towerbash,
+  video_link: "towerbash.mp4",
+  source_code_link: "https://github.com/mohammedsuhailkh/",
+  demo_link: "",
+},
+{
+  name: "VR Chemlab",
+  description: "VR Chemlab is an immersive virtual reality educational application fully designed and developed by me from scratch. I implemented all interaction systems, experiment mechanics, VR controls, UI workflows, and environment setup, creating an interactive simulation that allows users to safely perform and explore chemistry experiments within a realistic virtual learning environment.",
+  image: aargon,
+  video_link: "aargon.mp4",
+  source_code_link: "https://github.com/mohammedsuhailkh/",
+  demo_link: "",
+},
+{
+  name: "StarShip Stride (WebGL)",
+  description: "StarShip Stride is a WebGL-based space navigation game fully developed by me from scratch, where players pilot a spaceship through obstacle-filled environments to achieve a safe landing. I implemented player controls, physics-based movement, collision systems, level mechanics, gameplay logic, and WebGL optimization to deliver a smooth browser-based gameplay experience.",
+  image: pboost,
+  video_link: "starshipstride.mp4",
+  source_code_link: "https://github.com/mohammedsuhailkh/starship-stride",
+  demo_link: "",
+},
 
-  {
-    name: 'Food Truck Shef (WINDOWS / SWITCH)',
-    description: 'Master the kitchen: Upgrade your food truck, serve hungry customers, and become a top chef! Time management is key as you cook, serve, and manage your way to success. ',
-    image: monster,
-    video_link: 'monster.mp4', // Add the video link here
-    source_code_link: 'https://github.com/mohammedsuhailkh/monster-escape-unity3D',
-    demo_link: '',
-  },
+{
+  name: "Food Truck Shef (WINDOWS / SWITCH / PS5)",
+  description: "Food Truck Shef is a time-management cooking simulation game where I contributed by implementing input system modifications and handling platform adaptation during the PS5 porting process. My responsibilities also included resolving gameplay and platform-specific bugs, improving stability, and ensuring smooth performance and compatibility across supported platforms.",
+  image: monster,
+  video_link: "monster.mp4",
+  source_code_link: "https://github.com/mohammedsuhailkh/monster-escape-unity3D",
+  demo_link: "",
+},
   // {
   //   name: 'Mario Clone',
   //   description: 'Designed and crafted a Mario-inspired game with a comprehensive set of basic features.',
