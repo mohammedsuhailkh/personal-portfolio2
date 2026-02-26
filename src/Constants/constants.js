@@ -120,7 +120,7 @@ const projects = [
     demo_link: '',
   },
   {
-    name: 'Truck Driver (WINDOWS / MAC / ANDROID)',
+    name: 'Truck Driver (WINDOWS / MAC / ANDROID / SWITCH)',
     description: 'The game offers an authentic driving experience with realistic truck handling, diverse environments, changing weather conditions, and a day-night cycle. Players can upgrade and customize their trucks, tackle over 80 restoration missions, and engage in unlimited parking challenges.',
     image: towerbash,
     video_link: 'towerbash.mp4', // Add the video link here
@@ -145,7 +145,7 @@ const projects = [
   },
 
   {
-    name: 'Food Truck Shef (WINDOWS)',
+    name: 'Food Truck Shef (WINDOWS / SWITCH)',
     description: 'Master the kitchen: Upgrade your food truck, serve hungry customers, and become a top chef! Time management is key as you cook, serve, and manage your way to success. ',
     image: monster,
     video_link: 'monster.mp4', // Add the video link here
