@@ -1,34 +1,36 @@
 /**
- * HeroParticles.jsx  — v3
+ * HeroParticles.jsx  — v4
  *
- * Changes from v2:
- *  - 30-second countdown drawn on canvas (top-centre)
- *  - Shooting is blocked once time hits 0
- *  - Game-over score screen fades in on canvas
- *  - Dispatches 'heroTimeUp' immediately at 0s
- *  - Keeps TIME'S UP card for 5s, then fades it out
- *  - Dispatches 'heroGameEnd' only after fade-out so identity text appears later
+ * Responsive layout:
+ *  Desktop (>640px)  → side panel on the right (unchanged)
+ *  Mobile  (≤640px)  → compact bottom HUD bar + big FIRE button
+ *                       touch-to-shoot on canvas
+ *                       cannon base rises above the HUD bar
+ *
+ * Event flow:
+ *  timer→0  → heroTimeUp   → TIME'S UP card shown for 5 s
+ *  +5s      → heroGameEnd  → HeroText reveals identity
  */
 
 import { useEffect, useRef, useCallback, useState } from "react";
 
-// ──────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
 //  GUN CONFIG
-// ──────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
 const GUNS = [
-  { id:"pistol",  name:"GLOCK-17",  mode:"SEMI-AUTO",   key:"1",
+  { id:"pistol",  name:"GLOCK-17",  shortName:"GLOCK",  mode:"SEMI",      emoji:"🔫", key:"1",
     maxAmmo:15, cd:280,  pellets:1, spread:0,   spd:17,  pr:5,   exR:38,
     col:"#f59e0b", glow:"#fbbf24", barrelL:32, barrelW:7 },
-  { id:"shotgun", name:"MOSSBERG",  mode:"PUMP-ACTION", key:"2",
+  { id:"shotgun", name:"MOSSBERG",  shortName:"SHOT",   mode:"PUMP",      emoji:"💥", key:"2",
     maxAmmo:6,  cd:880,  pellets:8, spread:.30, spd:13,  pr:4,   exR:75,
     col:"#ef4444", glow:"#f87171", barrelL:26, barrelW:15 },
-  { id:"smg",     name:"MP5-K",     mode:"FULL-AUTO",   key:"3",
+  { id:"smg",     name:"MP5-K",     shortName:"MP5",    mode:"AUTO",      emoji:"⚡", key:"3",
     maxAmmo:35, cd:72,   pellets:1, spread:.07, spd:19,  pr:3.5, exR:24,
     col:"#22d3ee", glow:"#67e8f9", barrelL:40, barrelW:8 },
-  { id:"sniper",  name:"AWP-338",   mode:"BOLT-ACTION", key:"4",
+  { id:"sniper",  name:"AWP-338",   shortName:"AWP",    mode:"BOLT",      emoji:"🎯", key:"4",
     maxAmmo:5,  cd:1500, pellets:1, spread:0,   spd:999, pr:3,   exR:100,
     col:"#a855f7", glow:"#c084fc", barrelL:60, barrelW:6, hitscan:true },
-  { id:"rocket",  name:"RPG-7",     mode:"ROCKET",      key:"5",
+  { id:"rocket",  name:"RPG-7",     shortName:"RPG",    mode:"ROCKET",    emoji:"🚀", key:"5",
     maxAmmo:3,  cd:2000, pellets:1, spread:0,   spd:6.5, pr:11,  exR:160,
     col:"#f97316", glow:"#fb923c", barrelL:52, barrelW:18, isRocket:true },
 ];
@@ -37,60 +39,51 @@ const TECH = [
   {label:"HTML5",     abbr:"</>", col:"#E34F26",glow:"#ff6b35"},
   {label:"CSS3",      abbr:"{ }", col:"#1572B6",glow:"#38bdf8"},
   {label:"JS",        abbr:"JS",  col:"#F7DF1E",glow:"#fde047"},
-  {label:"React",     abbr:"React",  col:"#61DAFB",glow:"#7dd3fc"},
-  {label:"Unity",     abbr:"Unity",  col:"#ffffff", glow:"#e2e8f0"},
+  {label:"React",     abbr:"⚛",  col:"#61DAFB",glow:"#7dd3fc"},
+  {label:"Unity",     abbr:"◈",  col:"#ffffff", glow:"#e2e8f0"},
   {label:"C#",        abbr:"C#",  col:"#9B59B6",glow:"#c084fc"},
   {label:"Three.js",  abbr:"3JS", col:"#049EF4",glow:"#38bdf8"},
   {label:"Git",       abbr:"Git", col:"#F05032",glow:"#fb923c"},
-  {label:"Node.js",   abbr:"Node",col:"#339933",glow:"#4ade80"},
+  {label:"Node.js",   abbr:"⬡",  col:"#339933",glow:"#4ade80"},
   {label:"WebGL",     abbr:"GL",  col:"#cc0000",glow:"#f87171"},
-  {label:"AR/VR",     abbr:"ARVR",col:"#00D4FF",glow:"#67e8f9"},
+  {label:"AR/VR",     abbr:"◎",  col:"#00D4FF",glow:"#67e8f9"},
   {label:"TypeScript",abbr:"TS",  col:"#3178C6",glow:"#60a5fa"},
   {label:"Python",    abbr:"Py",  col:"#3776AB",glow:"#60a5fa"},
-  {label:"Docker",    abbr:"Dock",col:"#2496ED",glow:"#38bdf8"},
+  {label:"Docker",    abbr:"⚓",  col:"#2496ED",glow:"#38bdf8"},
   {label:"GraphQL",   abbr:"GQL", col:"#E10098",glow:"#f472b6"},
-  {label:"Rust",      abbr:"Rust",col:"#CE422B",glow:"#fb923c"},
+  {label:"Rust",      abbr:"Rs",  col:"#CE422B",glow:"#fb923c"},
 ];
 
-const GAME_DURATION = 30; // seconds
-const GAME_OVER_HOLD_MS = 5000;
-const GAME_OVER_FADE_MS = 1200;
+const GAME_DURATION    = 30;
+const GAME_OVER_HOLD   = 5000;
+const GAME_OVER_FADE   = 1200;
+const MOBILE_HUD_H     = 86;   // px — height of the bottom mobile bar
 
-// ──────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
 //  UTILS
-// ──────────────────────────────────────────────────────────────
-const rand  = (a, b) => Math.random() * (b - a) + a;
-const lerp  = (a, b, t) => a + (b - a) * t;
-const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const limit = (vx, vy, max) => {
-  const m = Math.sqrt(vx*vx + vy*vy);
-  return m > max ? [vx/m*max, vy/m*max] : [vx, vy];
-};
-const setMag = (vx, vy, m) => {
-  const l = Math.sqrt(vx*vx + vy*vy) || 1;
-  return [vx/l*m, vy/l*m];
-};
+// ─────────────────────────────────────────────────────────────
+const rand   = (a, b) => Math.random() * (b - a) + a;
+const lerp   = (a, b, t) => a + (b - a) * t;
+const clamp  = (v, a, b) => Math.max(a, Math.min(b, v));
+const limit  = (vx, vy, max) => { const m=Math.sqrt(vx*vx+vy*vy); return m>max?[vx/m*max,vy/m*max]:[vx,vy]; };
+const setMag = (vx, vy, m)   => { const l=Math.sqrt(vx*vx+vy*vy)||1; return [vx/l*m,vy/l*m]; };
 
-// ──────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
 //  BOIDS
-// ──────────────────────────────────────────────────────────────
-const SEP_R=75, ALI_R=140, COH_R=190;
-const SEP_W=1.9, ALI_W=1.0, COH_W=0.7, WAN_W=0.55, MAX_F=0.12;
+// ─────────────────────────────────────────────────────────────
+const SEP_R=75,ALI_R=140,COH_R=190,SEP_W=1.9,ALI_W=1.0,COH_W=0.7,WAN_W=0.55,MAX_F=0.12;
 
 function mkIcon(W, H, i) {
-  const d=TECH[i%TECH.length], a=rand(0,Math.PI*2), spd=rand(1.0,2.2);
-  return { ...d, x:rand(80,W-80), y:rand(80,H-140),
-    vx:Math.cos(a)*spd, vy:Math.sin(a)*spd,
-    rot:rand(0,Math.PI*2), size:rand(24,38),
-    op:0, dead:false, deadTimer:0,
-    wanderAngle:rand(0,Math.PI*2), maxSpd:rand(1.0,2.4),
-    trail:[], bankAngle:0 };
+  const d=TECH[i%TECH.length],a=rand(0,Math.PI*2),spd=rand(1.0,2.2);
+  return{ ...d, x:rand(80,W-80), y:rand(80,H-160),
+    vx:Math.cos(a)*spd, vy:Math.sin(a)*spd, rot:rand(0,Math.PI*2),
+    size:rand(24,38), op:0, dead:false, deadTimer:0,
+    wanderAngle:rand(0,Math.PI*2), maxSpd:rand(1.0,2.4), trail:[], bankAngle:0 };
 }
 function mkBullet(x, y, angle, gun) {
   const a=angle+rand(-gun.spread*.5,gun.spread*.5);
-  return { x, y, vx:Math.cos(a)*gun.spd, vy:Math.sin(a)*gun.spd,
-    r:gun.pr, alive:true, trail:[], gunId:gun.id,
-    col:gun.col, glow:gun.glow, isRocket:!!gun.isRocket };
+  return{ x,y, vx:Math.cos(a)*gun.spd, vy:Math.sin(a)*gun.spd,
+    r:gun.pr, alive:true, trail:[], gunId:gun.id, col:gun.col, glow:gun.glow, isRocket:!!gun.isRocket };
 }
 function mkExplosion(x, y, gun) {
   const count=gun.id==="rocket"?55:gun.id==="sniper"?40:gun.id==="shotgun"?35:22;
@@ -136,9 +129,9 @@ function boidsUpdate(ic, all, W, H) {
   ic.x+=ic.vx;ic.y+=ic.vy;
 }
 
-// ──────────────────────────────────────────────────────────────
-//  DRAW HELPERS
-// ──────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+//  CANVAS DRAW HELPERS
+// ─────────────────────────────────────────────────────────────
 function drawIcon(ctx, ic) {
   if(ic.dead)return;
   for(let i=1;i<ic.trail.length;i++){
@@ -206,105 +199,53 @@ function drawExplosion(ctx, e) {
   ctx.globalAlpha=1;ctx.shadowBlur=0;
 }
 
-// ──────────────────────────────────────────────────────────────
-//  DRAW: COUNTDOWN TIMER
-// ──────────────────────────────────────────────────────────────
 function drawTimer(ctx, W, timeLeft, pulse) {
-  const secs   = Math.ceil(timeLeft);
-  const urgent = secs <= 8;
-  const warn   = secs <= 15;
-  const col    = urgent ? "#ef4444" : warn ? "#facc15" : "#00ffc8";
-  const glow   = urgent ? "#ff000088" : warn ? "#facc1566" : "#00ffc844";
-  const scale  = urgent ? 1 + Math.sin(pulse * 0.18) * 0.09 : 1;
-
-  ctx.save();
-  ctx.translate(W/2, 52);
-  ctx.scale(scale, scale);
-
-  // Pill background
-  const pw=120, ph=44;
-  ctx.fillStyle="rgba(4,8,16,0.75)";
-  ctx.strokeStyle=col+"55"; ctx.lineWidth=1.5;
-  ctx.shadowColor=glow; ctx.shadowBlur=urgent?30:14;
-  ctx.beginPath(); ctx.roundRect(-pw/2,-ph/2,pw,ph,ph/2); ctx.fill(); ctx.stroke();
-
-  // Circular arc progress
-  const R=17, pct=timeLeft/GAME_DURATION;
-  // Track
-  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2);
-  ctx.strokeStyle=col+"22"; ctx.lineWidth=3.5; ctx.shadowBlur=0; ctx.stroke();
-  // Fill
-  ctx.beginPath(); ctx.arc(0,0,R,-Math.PI/2,-Math.PI/2+pct*Math.PI*2);
-  ctx.strokeStyle=col; ctx.lineWidth=3.5; ctx.shadowBlur=12; ctx.stroke();
-
-  // Number
-  ctx.shadowBlur=urgent?18:8; ctx.shadowColor=col;
-  ctx.fillStyle=col; ctx.font=`bold 19px 'Share Tech Mono',monospace`;
-  ctx.textAlign="center"; ctx.textBaseline="middle";
-  ctx.fillText(secs,0,0);
-
-  // "SEC" label to the right
-  ctx.shadowBlur=0; ctx.font=`9px 'Share Tech Mono',monospace`;
-  ctx.fillStyle=col+"77"; ctx.fillText("SEC",40,0);
-
-  // Urgent blinking "!!!" text
-  if(urgent && Math.floor(pulse/8)%2===0){
-    ctx.fillStyle="#ef4444";ctx.font=`bold 9px 'Share Tech Mono',monospace`;
-    ctx.fillText("!!!",- 40,0);
-  }
-
+  const secs=Math.ceil(timeLeft),urgent=secs<=8,warn=secs<=15;
+  const col=urgent?"#ef4444":warn?"#facc15":"#00ffc8";
+  const glow=urgent?"#ff000088":warn?"#facc1566":"#00ffc844";
+  const scale=urgent?1+Math.sin(pulse*0.18)*0.09:1;
+  ctx.save();ctx.translate(W/2,52);ctx.scale(scale,scale);
+  const pw=120,ph=44;
+  ctx.fillStyle="rgba(4,8,16,0.75)";ctx.strokeStyle=col+"55";ctx.lineWidth=1.5;
+  ctx.shadowColor=glow;ctx.shadowBlur=urgent?30:14;
+  ctx.beginPath();ctx.roundRect(-pw/2,-ph/2,pw,ph,ph/2);ctx.fill();ctx.stroke();
+  const R=17,pct=timeLeft/GAME_DURATION;
+  ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.strokeStyle=col+"22";ctx.lineWidth=3.5;ctx.shadowBlur=0;ctx.stroke();
+  ctx.beginPath();ctx.arc(0,0,R,-Math.PI/2,-Math.PI/2+pct*Math.PI*2);ctx.strokeStyle=col;ctx.lineWidth=3.5;ctx.shadowBlur=12;ctx.stroke();
+  ctx.shadowBlur=urgent?18:8;ctx.shadowColor=col;ctx.fillStyle=col;
+  ctx.font=`bold 19px 'Share Tech Mono',monospace`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(secs,0,0);
+  ctx.shadowBlur=0;ctx.font=`9px 'Share Tech Mono',monospace`;ctx.fillStyle=col+"77";ctx.fillText("SEC",40,0);
+  if(urgent&&Math.floor(pulse/8)%2===0){ctx.fillStyle="#ef4444";ctx.font=`bold 9px 'Share Tech Mono',monospace`;ctx.fillText("!!!",-40,0);}
   ctx.restore();
 }
 
-// ──────────────────────────────────────────────────────────────
-//  DRAW: GAME OVER SCREEN
-// ──────────────────────────────────────────────────────────────
 function drawGameOver(ctx, W, H, kills, shots, hits, alpha) {
-  ctx.save();
-  ctx.globalAlpha=alpha;
-
-  // Dark vignette
+  ctx.save();ctx.globalAlpha=alpha;
   const vg=ctx.createRadialGradient(W/2,H/2,H*.08,W/2,H/2,H*.72);
   vg.addColorStop(0,"rgba(0,0,0,0)");vg.addColorStop(1,"rgba(0,0,0,0.75)");
   ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
-
-  // Centre card
   const cw=330,ch=200,cx=W/2,cy=H/2;
   ctx.shadowColor="#ef4444";ctx.shadowBlur=30;
   ctx.fillStyle="rgba(4,8,16,0.92)";ctx.strokeStyle="rgba(239,68,68,0.55)";ctx.lineWidth=1.5;
   ctx.beginPath();ctx.roundRect(cx-cw/2,cy-ch/2,cw,ch,10);ctx.fill();ctx.stroke();
-
-  // Title
   ctx.shadowColor="#ef4444";ctx.shadowBlur=22;ctx.fillStyle="#ef4444";
-  ctx.font="bold 30px 'Share Tech Mono',monospace";ctx.textAlign="center";ctx.textBaseline="middle";
-  ctx.fillText("TIME'S UP!",cx,cy-65);
-
-  // Divider
+  ctx.font="bold 30px 'Share Tech Mono',monospace";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("TIME'S UP!",cx,cy-65);
   ctx.shadowBlur=0;ctx.strokeStyle="rgba(239,68,68,0.2)";ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(cx-130,cy-42);ctx.lineTo(cx+130,cy-42);ctx.stroke();
-
-  // Stats
   const acc=shots>0?Math.round(hits/shots*100):0;
-  const rows=[["ICONS DESTROYED",kills],["SHOTS FIRED",shots],["ACCURACY",acc+"%"]];
-  rows.forEach(([label,val],i)=>{
+  [["ICONS DESTROYED",kills],["SHOTS FIRED",shots],["ACCURACY",acc+"%"]].forEach(([label,val],i)=>{
     const ry=cy-14+i*38;
-    ctx.font="10px 'Share Tech Mono',monospace";ctx.fillStyle="rgba(255,255,255,0.38)";
-    ctx.textAlign="left";ctx.fillText(label,cx-128,ry);
-    ctx.fillStyle="#00ffc8";ctx.font="bold 15px 'Share Tech Mono',monospace";
-    ctx.textAlign="right";ctx.fillText(val,cx+128,ry);
+    ctx.font="10px 'Share Tech Mono',monospace";ctx.fillStyle="rgba(255,255,255,0.38)";ctx.textAlign="left";ctx.fillText(label,cx-128,ry);
+    ctx.fillStyle="#00ffc8";ctx.font="bold 15px 'Share Tech Mono',monospace";ctx.textAlign="right";ctx.fillText(val,cx+128,ry);
   });
-
-  // Footer
-  ctx.shadowBlur=0;ctx.font="10px 'Share Tech Mono',monospace";
-  ctx.fillStyle="rgba(0,255,200,0.3)";ctx.textAlign="center";
+  ctx.shadowBlur=0;ctx.font="10px 'Share Tech Mono',monospace";ctx.fillStyle="rgba(0,255,200,0.3)";ctx.textAlign="center";
   ctx.fillText("// unlocking identity...",cx,cy+82);
-
   ctx.globalAlpha=1;ctx.restore();
 }
 
-// ──────────────────────────────────────────────────────────────
-//  ARSENAL UI
-// ──────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+//  DESKTOP SIDE PANEL
+// ─────────────────────────────────────────────────────────────
 function GunCard({ gun, index, isSelected, ammo, onSelect, disabled }) {
   const dots=Math.min(gun.maxAmmo,15);
   return (
@@ -313,7 +254,7 @@ function GunCard({ gun, index, isSelected, ammo, onSelect, disabled }) {
       border:`1px solid ${isSelected?gun.col+"88":"rgba(255,255,255,0.06)"}`,
       borderRadius:2,cursor:disabled?"default":"pointer",overflow:"hidden",
       background:isSelected?"rgba(0,0,0,0.55)":"transparent",
-      opacity:disabled?.4:1,transition:"all .15s",
+      opacity:disabled?.35:1,transition:"all .15s",
     }}>
       {isSelected&&!disabled&&<div style={{position:"absolute",left:0,top:0,bottom:0,width:2,background:gun.col,boxShadow:`0 0 8px ${gun.col}`}}/>}
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:3}}>
@@ -331,7 +272,7 @@ function GunCard({ gun, index, isSelected, ammo, onSelect, disabled }) {
   );
 }
 
-function ArsenalPanel({ selectedGun, gunAmmo, onSelectGun, onReload, kills, shots, hits, reloading, gameEnded, timeLeft }) {
+function DesktopPanel({ selectedGun, gunAmmo, onSelectGun, onReload, kills, shots, hits, reloading, gameEnded, timeLeft }) {
   const urgent=timeLeft<=8&&!gameEnded;
   const frame={padding:"12px 11px",background:"rgba(4,8,16,0.88)",border:"1px solid rgba(0,255,180,0.15)",clipPath:"polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))",backdropFilter:"blur(12px)"};
   return (
@@ -339,9 +280,7 @@ function ArsenalPanel({ selectedGun, gunAmmo, onSelectGun, onReload, kills, shot
       <div style={frame}>
         <div style={{fontSize:10,fontWeight:700,color:"rgba(0,255,180,0.65)",letterSpacing:".25em",marginBottom:10,paddingBottom:8,borderBottom:"1px solid rgba(0,255,180,0.1)",fontFamily:"'Orbitron',sans-serif",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <span>ARSENAL</span>
-          {!gameEnded&&(
-            <span style={{fontSize:13,fontWeight:700,letterSpacing:".05em",color:urgent?"#ef4444":timeLeft<=15?"#facc15":"#00ffc8",textShadow:urgent?"0 0 12px #ef4444":"none"}}>{Math.ceil(timeLeft)}s</span>
-          )}
+          {!gameEnded&&<span style={{fontSize:13,fontWeight:700,color:urgent?"#ef4444":timeLeft<=15?"#facc15":"#00ffc8",textShadow:urgent?"0 0 12px #ef4444":"none"}}>{Math.ceil(timeLeft)}s</span>}
         </div>
         {GUNS.map((gun,i)=>(
           <GunCard key={gun.id} gun={gun} index={i} isSelected={i===selectedGun} ammo={gunAmmo[i]} onSelect={onSelectGun} disabled={gameEnded}/>
@@ -363,53 +302,234 @@ function ArsenalPanel({ selectedGun, gunAmmo, onSelectGun, onReload, kills, shot
   );
 }
 
-// ──────────────────────────────────────────────────────────────
-//  MAIN
-// ──────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+//  MOBILE BOTTOM HUD
+// ─────────────────────────────────────────────────────────────
+function MobileHUD({ selectedGun, gunAmmo, onSelectGun, onReload, onFire, kills, reloading, gameEnded, timeLeft }) {
+  const g     = GUNS[selectedGun];
+  const urgent = timeLeft <= 8 && !gameEnded;
+  const timerCol = urgent ? "#ef4444" : timeLeft <= 15 ? "#facc15" : "#00ffc8";
+
+  return (
+    <div style={{
+      position:"absolute", bottom:0, left:0, right:0, zIndex:20,
+      height: MOBILE_HUD_H,
+      background:"rgba(4,8,16,0.92)",
+      borderTop:"1px solid rgba(0,255,180,0.18)",
+      backdropFilter:"blur(16px)",
+      display:"flex", flexDirection:"column",
+      opacity: gameEnded ? 0 : 1,
+      transition:"opacity .9s",
+      pointerEvents: gameEnded ? "none" : "auto",
+    }}>
+
+      {/* ── Top strip: gun chips + timer ── */}
+      <div style={{
+        display:"flex", alignItems:"center",
+        padding:"6px 8px 4px",
+        gap:6, overflow:"hidden",
+      }}>
+        {/* Gun chips — scrollable row */}
+        <div style={{
+          display:"flex", gap:5, flex:1,
+          overflowX:"auto", scrollbarWidth:"none",
+          WebkitOverflowScrolling:"touch",
+        }}>
+          {GUNS.map((gun,i) => {
+            const sel = i === selectedGun;
+            const ammo = gunAmmo[i];
+            const empty = ammo === 0;
+            return (
+              <div
+                key={gun.id}
+                onClick={() => !gameEnded && onSelectGun(i)}
+                style={{
+                  flexShrink:0,
+                  minWidth: sel ? 72 : 52,
+                  padding: sel ? "5px 8px" : "5px 6px",
+                  border:`1px solid ${sel ? gun.col : "rgba(255,255,255,0.1)"}`,
+                  borderRadius:4,
+                  background: sel ? `${gun.col}18` : "rgba(0,0,0,0.3)",
+                  cursor:"pointer",
+                  transition:"all .15s",
+                  opacity: empty ? 0.45 : 1,
+                  position:"relative",
+                  overflow:"hidden",
+                }}
+              >
+                {sel && <div style={{position:"absolute",top:0,left:0,right:0,height:2,background:gun.col,boxShadow:`0 0 6px ${gun.col}`}}/>}
+                <div style={{fontSize:10,fontWeight:700,color:sel?gun.col:"rgba(255,255,255,0.6)",fontFamily:"'Share Tech Mono',monospace",letterSpacing:".04em",whiteSpace:"nowrap"}}>
+                  {sel ? gun.shortName : gun.emoji}
+                </div>
+                {sel && (
+                  <div style={{fontSize:9,color:"rgba(255,255,255,0.4)",fontFamily:"'Share Tech Mono',monospace",marginTop:1}}>
+                    {gun.maxAmmo <= 15
+                      ? `${"▪".repeat(ammo)}${"·".repeat(Math.max(0,gun.maxAmmo-ammo))}`.slice(0,10)
+                      : `${ammo}/${gun.maxAmmo}`}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Timer chip */}
+        <div style={{
+          flexShrink:0,
+          width:52, height:42,
+          border:`1px solid ${timerCol}44`,
+          borderRadius:6,
+          background:"rgba(0,0,0,0.5)",
+          display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+          gap:1,
+        }}>
+          <span style={{fontSize:18,fontWeight:700,color:timerCol,fontFamily:"'Share Tech Mono',monospace",lineHeight:1,textShadow:urgent?`0 0 12px ${timerCol}`:"none"}}>
+            {Math.ceil(timeLeft)}
+          </span>
+          <span style={{fontSize:7,color:timerCol+"88",fontFamily:"'Share Tech Mono',monospace",letterSpacing:".1em"}}>SEC</span>
+        </div>
+      </div>
+
+      {/* ── Bottom strip: score + reload + FIRE ── */}
+      <div style={{
+        display:"flex", alignItems:"center",
+        padding:"2px 8px 6px",
+        gap:6, flex:1,
+      }}>
+        {/* Score */}
+        <div style={{flex:1, display:"flex", flexDirection:"column", gap:1}}>
+          <span style={{fontSize:9,color:"rgba(255,255,255,0.3)",fontFamily:"'Share Tech Mono',monospace",letterSpacing:".1em"}}>DESTROYED</span>
+          <span style={{fontSize:15,fontWeight:700,color:"#00ffc8",fontFamily:"'Share Tech Mono',monospace"}}>{kills}</span>
+        </div>
+
+        {/* Gun mode label */}
+        <div style={{
+          fontSize:9, color:g.col, fontFamily:"'Share Tech Mono',monospace",
+          letterSpacing:".1em", border:`1px solid ${g.col}44`,
+          padding:"2px 6px", borderRadius:3, flexShrink:0,
+        }}>
+          {g.mode}
+        </div>
+
+        {/* Reload */}
+        <button
+          onClick={onReload}
+          style={{
+            padding:"6px 10px",
+            background: reloading ? "rgba(255,140,0,0.1)" : "rgba(0,255,180,0.07)",
+            border:`1px solid ${reloading?"rgba(255,140,0,0.4)":"rgba(0,255,180,0.25)"}`,
+            borderRadius:4, cursor:"pointer",
+            color: reloading ? "rgba(255,140,0,0.9)" : "rgba(0,255,180,0.7)",
+            fontSize:10, fontFamily:"'Share Tech Mono',monospace",
+            letterSpacing:".1em", flexShrink:0,
+            WebkitTapHighlightColor:"transparent",
+            userSelect:"none",
+          }}
+        >
+          {reloading ? "…" : "RELOAD"}
+        </button>
+
+        {/* FIRE button */}
+        <button
+          onPointerDown={(e)=>{e.preventDefault();onFire();}}
+          style={{
+            width:60, height:44,
+            borderRadius:8,
+            background:`linear-gradient(135deg,${g.col}33,${g.col}18)`,
+            border:`2px solid ${g.col}`,
+            boxShadow:`0 0 16px ${g.glow}55`,
+            cursor:"pointer",
+            color:g.col,
+            fontSize:11,fontWeight:700,fontFamily:"'Share Tech Mono',monospace",
+            letterSpacing:".08em",
+            flexShrink:0,
+            WebkitTapHighlightColor:"transparent",
+            userSelect:"none",
+            touchAction:"none",
+          }}
+        >
+          FIRE
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+//  HOOK: window width
+// ─────────────────────────────────────────────────────────────
+function useIsMobile(breakpoint = 640) {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= breakpoint);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= breakpoint);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, [breakpoint]);
+  return isMobile;
+}
+
+// ─────────────────────────────────────────────────────────────
+//  MAIN COMPONENT
+// ─────────────────────────────────────────────────────────────
 const HeroParticles = () => {
-  const canvasRef   = useRef(null);
-  const stateRef    = useRef({
+  const canvasRef = useRef(null);
+  const stateRef  = useRef({
     icons:[], projs:[], exps:[], beams:[],
     mouseX:0, mouseY:0, cannonAngle:-Math.PI/2,
     shake:{x:0,y:0,t:0,str:0}, lastShot:0,
     startTime: Date.now(),
-    gameEnded: false, overlayAlpha:0, pulseT:0,
-    gameOverAt: 0, revealSent: false,
+    gameEnded:false, overlayAlpha:0, pulseT:0,
+    gameOverAt:0, revealSent:false,
+    isMobileRef: false,   // kept in sync below
     animFrame:null,
   });
 
-  const [selectedGun,setSelectedGun]=useState(0);
-  const [gunAmmo,setGunAmmo]=useState(GUNS.map(g=>g.maxAmmo));
-  const [kills,setKills]=useState(0);
-  const [shots,setShots]=useState(0);
-  const [hits,setHits]=useState(0);
-  const [reloading,setReloading]=useState(false);
-  const [hitFlash,setHitFlash]=useState(0);
-  const [gameEnded,setGameEnded]=useState(false);
-  const [timeLeft,setTimeLeft]=useState(GAME_DURATION);
+  const [selectedGun, setSelectedGun] = useState(0);
+  const [gunAmmo,     setGunAmmo]     = useState(GUNS.map(g => g.maxAmmo));
+  const [kills,       setKills]       = useState(0);
+  const [shots,       setShots]       = useState(0);
+  const [hits,        setHits]        = useState(0);
+  const [reloading,   setReloading]   = useState(false);
+  const [hitFlash,    setHitFlash]    = useState(0);
+  const [gameEnded,   setGameEnded]   = useState(false);
+  const [timeLeft,    setTimeLeft]    = useState(GAME_DURATION);
 
-  const selectedGunRef=useRef(0);
-  const gunAmmoRef=useRef(GUNS.map(g=>g.maxAmmo));
-  const reloadingRef=useRef(false);
-  const killsRef=useRef(0);
-  const shotsRef=useRef(0);
-  const hitsRef=useRef(0);
+  const isMobile = useIsMobile(640);
 
-  const syncSelectedGun=(i)=>{selectedGunRef.current=i;setSelectedGun(i);};
-  const syncGunAmmo=(arr)=>{gunAmmoRef.current=[...arr];setGunAmmo([...arr]);};
+  const selectedGunRef = useRef(0);
+  const gunAmmoRef     = useRef(GUNS.map(g => g.maxAmmo));
+  const reloadingRef   = useRef(false);
+  const killsRef       = useRef(0);
+  const shotsRef       = useRef(0);
+  const hitsRef        = useRef(0);
+  const isMobileRef    = useRef(isMobile);
 
-  const hitIcon=useCallback((ic,gun)=>{
-    ic.dead=true;ic.deadTimer=110+Math.floor(rand(0,90));
+  // Keep isMobileRef in sync so the canvas loop can read it
+  useEffect(() => { isMobileRef.current = isMobile; stateRef.current.isMobileRef = isMobile; }, [isMobile]);
+
+  const syncSelectedGun = (i) => { selectedGunRef.current=i; setSelectedGun(i); };
+  const syncGunAmmo     = (arr) => { gunAmmoRef.current=[...arr]; setGunAmmo([...arr]); };
+
+  // ── Helpers ───────────────────────────────────────────────
+  const cannonY = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return 0;
+    return isMobileRef.current ? canvas.height - MOBILE_HUD_H - 22 : canvas.height - 22;
+  }, []);
+
+  const hitIcon = useCallback((ic, gun) => {
+    ic.dead=true; ic.deadTimer=110+Math.floor(rand(0,90));
     stateRef.current.exps.push(mkExplosion(ic.x,ic.y,gun));
-    killsRef.current++;hitsRef.current++;setKills(killsRef.current);setHits(hitsRef.current);
+    killsRef.current++; hitsRef.current++;
+    setKills(killsRef.current); setHits(hitsRef.current);
     const s=stateRef.current.shake;
     s.t=Math.max(s.t,gun.id==="rocket"?18:gun.id==="sniper"?14:6);
     s.str=Math.max(s.str,gun.id==="rocket"?9:gun.id==="sniper"?7:3);
     setHitFlash(gun.id==="rocket"?.25:gun.id==="sniper"?.15:.07);
     setTimeout(()=>setHitFlash(0),80);
-  },[]);
+  }, []);
 
-  const shoot=useCallback(()=>{
+  const shoot = useCallback(() => {
     if(stateRef.current.gameEnded)return;
     if(reloadingRef.current)return;
     const g=GUNS[selectedGunRef.current];
@@ -419,10 +539,11 @@ const HeroParticles = () => {
     const ammo=gunAmmoRef.current;
     if(ammo[selectedGunRef.current]<=0)return;
     s.lastShot=now;
-    const canvas=canvasRef.current;if(!canvas)return;
-    const W=canvas.width,H=canvas.height,cx=W/2,cy=H-22;
-    const newAmmo=[...ammo];newAmmo[selectedGunRef.current]--;syncGunAmmo(newAmmo);
-    shotsRef.current++;setShots(shotsRef.current);
+    const canvas=canvasRef.current; if(!canvas)return;
+    const W=canvas.width, cy=cannonY(), cx=W/2;
+    const newAmmo=[...ammo]; newAmmo[selectedGunRef.current]--;
+    syncGunAmmo(newAmmo);
+    shotsRef.current++; setShots(shotsRef.current);
     const ox=cx+Math.cos(s.cannonAngle)*g.barrelL;
     const oy=cy+Math.sin(s.cannonAngle)*g.barrelL;
     if(g.hitscan){
@@ -438,40 +559,65 @@ const HeroParticles = () => {
       s.shake.t=14;s.shake.str=7;
     } else {
       for(let p=0;p<g.pellets;p++)s.projs.push(mkBullet(ox,oy,s.cannonAngle,g));
-      s.shake.t=g.isRocket?4:2;s.shake.str=g.isRocket?4:1.5;
+      s.shake.t=g.isRocket?4:2; s.shake.str=g.isRocket?4:1.5;
     }
     s.exps.push({x:ox,y:oy,pts:Array.from({length:8},()=>{const a=rand(0,Math.PI*2),sp=rand(1,4);return{x:ox,y:oy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:rand(1,3),a:1,col:g.glow,d:.18};}),rings:[{r:0,maxR:18,a:.8,col:g.glow}],gunId:"muzzle"});
-  },[hitIcon]);
+  }, [hitIcon, cannonY]);
 
-  const startReload=useCallback(()=>{
+  const startReload = useCallback(() => {
     if(stateRef.current.gameEnded)return;
     if(reloadingRef.current)return;
     const gi=selectedGunRef.current;
     if(gunAmmoRef.current[gi]===GUNS[gi].maxAmmo)return;
-    reloadingRef.current=true;setReloading(true);
+    reloadingRef.current=true; setReloading(true);
     const ms=GUNS[gi].id==="sniper"?2200:GUNS[gi].id==="rocket"?2800:1200;
     setTimeout(()=>{const a=[...gunAmmoRef.current];a[gi]=GUNS[gi].maxAmmo;syncGunAmmo(a);reloadingRef.current=false;setReloading(false);},ms);
-  },[]);
+  }, []);
 
-  useEffect(()=>{
-    const canvas=canvasRef.current;if(!canvas)return;
+  // ── Canvas loop ───────────────────────────────────────────
+  useEffect(() => {
+    const canvas=canvasRef.current; if(!canvas)return;
     const ctx=canvas.getContext("2d");
     const s=stateRef.current;
 
     const resize=()=>{
-      canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;
+      canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight;
       if(!s.icons.length)s.icons=Array.from({length:22},(_,i)=>mkIcon(canvas.width,canvas.height,i));
     };
-    resize();window.addEventListener("resize",resize);
+    resize(); window.addEventListener("resize",resize);
 
-    const onMove=e=>{const r=canvas.getBoundingClientRect();s.mouseX=e.clientX-r.left;s.mouseY=e.clientY-r.top;};
+    // Mouse
+    const onMove=e=>{
+      const r=canvas.getBoundingClientRect();
+      s.mouseX=e.clientX-r.left; s.mouseY=e.clientY-r.top;
+    };
     canvas.addEventListener("mousemove",onMove);
     canvas.addEventListener("click",shoot);
 
+    // Touch — aim toward touch point, fire on tap
+    const onTouchMove=e=>{
+      e.preventDefault();
+      const r=canvas.getBoundingClientRect();
+      const t=e.touches[0];
+      s.mouseX=t.clientX-r.left; s.mouseY=t.clientY-r.top;
+    };
+    const onTouchStart=e=>{
+      e.preventDefault();
+      const r=canvas.getBoundingClientRect();
+      const t=e.touches[0];
+      s.mouseX=t.clientX-r.left; s.mouseY=t.clientY-r.top;
+      // Only fire if the touch is in the upper canvas area (not over HUD)
+      const hudTop=isMobileRef.current?canvas.height-MOBILE_HUD_H:canvas.height;
+      if(t.clientY-r.top < hudTop - 10)shoot();
+    };
+    canvas.addEventListener("touchmove",onTouchMove,{passive:false});
+    canvas.addEventListener("touchstart",onTouchStart,{passive:false});
+
+    // SMG hold
     let smgInt=null;
     const onDown=()=>{if(GUNS[selectedGunRef.current].id==="smg"&&!s.gameEnded)smgInt=setInterval(shoot,GUNS[selectedGunRef.current].cd);};
     const onUp=()=>{clearInterval(smgInt);smgInt=null;};
-    canvas.addEventListener("mousedown",onDown);window.addEventListener("mouseup",onUp);
+    canvas.addEventListener("mousedown",onDown); window.addEventListener("mouseup",onUp);
 
     const onKey=e=>{
       if(s.gameEnded)return;
@@ -483,38 +629,31 @@ const HeroParticles = () => {
     window.addEventListener("keydown",onKey);
 
     const loop=()=>{
-      const W=canvas.width,H=canvas.height,cx=W/2,cy=H-22;
+      const W=canvas.width,H=canvas.height;
+      const mobile=isMobileRef.current;
+      const cy=mobile?H-MOBILE_HUD_H-22:H-22;
+      const cx=W/2;
+
       ctx.clearRect(0,0,W,H);
       ctx.save();
 
-      // — Timer —
+      // Timer
       const tLeft=Math.max(0,GAME_DURATION-(Date.now()-s.startTime)/1000);
-      setTimeLeft(tLeft);
-      s.pulseT++;
+      setTimeLeft(tLeft); s.pulseT++;
 
       if(tLeft<=0&&!s.gameEnded){
-        s.gameEnded=true;setGameEnded(true);
-        s.gameOverAt=Date.now();
-        s.overlayAlpha=1;
+        s.gameEnded=true; setGameEnded(true);
+        s.gameOverAt=Date.now(); s.overlayAlpha=1;
         window.dispatchEvent(new CustomEvent("heroTimeUp",{detail:{score:killsRef.current}}));
       }
       if(s.gameEnded){
-        const elapsed=Date.now()-s.gameOverAt;
-        if(elapsed<=GAME_OVER_HOLD_MS){
-          s.overlayAlpha=1;
-        }else if(elapsed<=GAME_OVER_HOLD_MS+GAME_OVER_FADE_MS){
-          const fadeProgress=(elapsed-GAME_OVER_HOLD_MS)/GAME_OVER_FADE_MS;
-          s.overlayAlpha=Math.max(0,1-fadeProgress);
-        }else{
-          s.overlayAlpha=0;
-          if(!s.revealSent){
-            s.revealSent=true;
-            window.dispatchEvent(new CustomEvent("heroGameEnd",{detail:{score:killsRef.current}}));
-          }
-        }
+        const el=Date.now()-s.gameOverAt;
+        if(el<=GAME_OVER_HOLD){s.overlayAlpha=1;}
+        else if(el<=GAME_OVER_HOLD+GAME_OVER_FADE){s.overlayAlpha=Math.max(0,1-(el-GAME_OVER_HOLD)/GAME_OVER_FADE);}
+        else{s.overlayAlpha=0;if(!s.revealSent){s.revealSent=true;window.dispatchEvent(new CustomEvent("heroGameEnd",{detail:{score:killsRef.current}}));}}
       }
 
-      // — Shake —
+      // Shake
       if(s.shake.t>0){s.shake.t--;s.shake.x=rand(-s.shake.str,s.shake.str)*(s.shake.t/12);s.shake.y=rand(-s.shake.str,s.shake.str)*(s.shake.t/12);}
       else{s.shake.x=lerp(s.shake.x,0,.35);s.shake.y=lerp(s.shake.y,0,.35);}
       ctx.translate(s.shake.x,s.shake.y);
@@ -539,7 +678,7 @@ const HeroParticles = () => {
         if(p.trail.length>(p.isRocket?18:10))p.trail.shift();
         p.x+=p.vx;p.y+=p.vy;
         p.isRocket?drawRocket(ctx,p):drawBullet(ctx,p);
-        if(p.x<-30||p.x>W+30||p.y<-30||p.y>H+30){p.alive=false;continue;}
+        if(p.x<-30||p.x>W+30||p.y<-60||p.y>H+30){p.alive=false;continue;}
         const g=GUNS.find(g=>g.id===p.gunId)||GUNS[0];
         for(const ic of s.icons){
           if(ic.dead)continue;
@@ -569,7 +708,7 @@ const HeroParticles = () => {
       // Cannon
       if(!s.gameEnded)drawCannon(ctx,cx,cy,s.cannonAngle,selectedGunRef.current);
 
-      // Crosshair
+      // Crosshair (desktop or when touch has moved)
       if(!s.gameEnded){
         const cg=GUNS[selectedGunRef.current];
         ctx.save();ctx.strokeStyle=cg.col;ctx.lineWidth=1;ctx.globalAlpha=.5;
@@ -579,7 +718,7 @@ const HeroParticles = () => {
         ctx.restore();
       }
 
-      // Timer HUD
+      // Timer HUD (on canvas)
       if(!s.gameEnded)drawTimer(ctx,W,tLeft,s.pulseT);
 
       // Game-over overlay
@@ -594,13 +733,15 @@ const HeroParticles = () => {
       cancelAnimationFrame(s.animFrame);
       canvas.removeEventListener("mousemove",onMove);
       canvas.removeEventListener("click",shoot);
+      canvas.removeEventListener("touchmove",onTouchMove);
+      canvas.removeEventListener("touchstart",onTouchStart);
       canvas.removeEventListener("mousedown",onDown);
       window.removeEventListener("mouseup",onUp);
       window.removeEventListener("keydown",onKey);
       window.removeEventListener("resize",resize);
       clearInterval(smgInt);
     };
-  },[shoot,startReload,hitIcon]);
+  }, [shoot, startReload, hitIcon, cannonY]);
 
   return (
     <>
@@ -611,15 +752,40 @@ const HeroParticles = () => {
 
       {/* Canvas */}
       <canvas ref={canvasRef}
-        style={{position:"absolute",inset:0,width:"100%",height:"100%",
-          cursor:gameEnded?"default":"crosshair",display:"block",background:"transparent"}}
+        style={{
+          position:"absolute",inset:0,width:"100%",height:"100%",
+          cursor:gameEnded?"default":"crosshair",
+          display:"block",background:"transparent",
+          // prevent default touch behaviors that interfere
+          touchAction:"none",
+        }}
         aria-hidden="true"/>
 
-      {/* Arsenal panel */}
-      <ArsenalPanel selectedGun={selectedGun} gunAmmo={gunAmmo}
-        onSelectGun={syncSelectedGun} onReload={startReload}
-        kills={kills} shots={shots} hits={hits}
-        reloading={reloading} gameEnded={gameEnded} timeLeft={timeLeft}/>
+      {/* Responsive HUD */}
+      {isMobile ? (
+        <MobileHUD
+          selectedGun={selectedGun}
+          gunAmmo={gunAmmo}
+          onSelectGun={syncSelectedGun}
+          onReload={startReload}
+          onFire={shoot}
+          kills={kills}
+          reloading={reloading}
+          gameEnded={gameEnded}
+          timeLeft={timeLeft}
+        />
+      ) : (
+        <DesktopPanel
+          selectedGun={selectedGun}
+          gunAmmo={gunAmmo}
+          onSelectGun={syncSelectedGun}
+          onReload={startReload}
+          kills={kills} shots={shots} hits={hits}
+          reloading={reloading}
+          gameEnded={gameEnded}
+          timeLeft={timeLeft}
+        />
+      )}
     </>
   );
 };
