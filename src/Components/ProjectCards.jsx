@@ -526,11 +526,11 @@ const ProjectCards = () => {
                       <span className="pc-title-dot" />
                       {project.name}
                     </div>
-                    <div className="pc-tag-row">
+                    {/* <div className="pc-tag-row">
                       {(project.tags || ['React', 'Node.js']).map((tag, i) => (
                         <span key={i} className="pc-tag">{tag}</span>
                       ))}
-                    </div>
+                    </div> */}
                     <div className="pc-click-hint">
                       <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
@@ -587,11 +587,11 @@ const ProjectCards = () => {
                 </h2>
               </div>
 
-              <div className="pc-tag-row" style={{ marginBottom: 0 }}>
+              {/* <div className="pc-tag-row" style={{ marginBottom: 0 }}>
                 {(selectedProject.tags || ['React', 'Node.js']).map((tag, i) => (
                   <span key={i} className="pc-tag">{tag}</span>
                 ))}
-              </div>
+              </div> */}
 
               <div className="pc-divider" />
 
