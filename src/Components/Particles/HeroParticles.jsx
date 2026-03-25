@@ -595,14 +595,13 @@ const HeroParticles = () => {
     canvas.addEventListener("click",shoot);
 
     // Touch — aim toward touch point, fire on tap
+    // passive:true so the browser can still scroll the page freely
     const onTouchMove=e=>{
-      e.preventDefault();
       const r=canvas.getBoundingClientRect();
       const t=e.touches[0];
       s.mouseX=t.clientX-r.left; s.mouseY=t.clientY-r.top;
     };
     const onTouchStart=e=>{
-      e.preventDefault();
       const r=canvas.getBoundingClientRect();
       const t=e.touches[0];
       s.mouseX=t.clientX-r.left; s.mouseY=t.clientY-r.top;
@@ -610,8 +609,8 @@ const HeroParticles = () => {
       const hudTop=isMobileRef.current?canvas.height-MOBILE_HUD_H:canvas.height;
       if(t.clientY-r.top < hudTop - 10)shoot();
     };
-    canvas.addEventListener("touchmove",onTouchMove,{passive:false});
-    canvas.addEventListener("touchstart",onTouchStart,{passive:false});
+    canvas.addEventListener("touchmove",onTouchMove,{passive:true});
+    canvas.addEventListener("touchstart",onTouchStart,{passive:true});
 
     // SMG hold
     let smgInt=null;
@@ -756,8 +755,6 @@ const HeroParticles = () => {
           position:"absolute",inset:0,width:"100%",height:"100%",
           cursor:gameEnded?"default":"crosshair",
           display:"block",background:"transparent",
-          // prevent default touch behaviors that interfere
-          touchAction:"none",
         }}
         aria-hidden="true"/>
 
