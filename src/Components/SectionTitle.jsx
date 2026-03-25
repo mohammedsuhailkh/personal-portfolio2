@@ -1,37 +1,38 @@
-
-
 import { m, LazyMotion, domAnimation } from "framer-motion";
 
-const SectionTitle = (props) => {
-  const { title, subtitle } = props;
-
+const SectionTitle = ({ title, subtitle }) => {
   return (
-    <LazyMotion features={domAnimation} strict> 
+    <LazyMotion features={domAnimation} strict>
       <m.div
-        initial={{ x: -350 }}
-        whileInView={{ x: 0 }}
-        transition={{ duration: 0.6, type: "spring" }}
-        className="tcolor p-6 noselect"
+        initial={{ x: -350, opacity: 0 }}
+        whileInView={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.65, type: "spring", stiffness: 80, damping: 18 }}
+        className="p-6 noselect"
       >
-        <span
-          className="opacity-50"
-          style={{
-            textTransform: "uppercase",
-            fontFamily: "Poppins, sans-serif",
-            fontWeight: "600",
-          }}
-        >
-          {subtitle}
-        </span>
-        <h2
-          className="tracking-wider text-7xl sm:text-8xl md:text-9xl"
-          style={{ fontFamily: "Morganite Black"}}
-        >
+        {/* Subtitle pill */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
+          <span
+            style={{
+              display: "inline-block",
+              width: "28px",
+              height: "1.5px",
+              background: "linear-gradient(90deg, var(--accent-1), var(--accent-2))",
+              borderRadius: "2px",
+              flexShrink: 0,
+            }}
+          />
+          <span className="section-subtitle">{subtitle}</span>
+        </div>
+
+        {/* Main title */}
+        <h2 className="section-title tracking-wider">
           {title.split("").map((char, index) => {
-            if(char === " ") {
-              return " ";
-            }
-            return <span key={index} className="bounce">{char}</span>
+            if (char === " ") return " ";
+            return (
+              <span key={index} className="bounce">
+                {char}
+              </span>
+            );
           })}
         </h2>
       </m.div>

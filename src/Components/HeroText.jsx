@@ -26,8 +26,9 @@ const HeroText = () => {
 
   return (
     <div
-      className="noselect w-fit h-fit text-grayscale-50 absolute z-10 flex flex-col justify-center items-center rounded-[50%]"
+      className="noselect w-fit h-fit absolute z-10 flex flex-col justify-center items-center rounded-[50%]"
       id="repulse-div"
+      style={{ color: "var(--text-primary)" }}
     >
       <LazyMotion features={domAnimation} strict>
         <AnimatePresence mode="wait">
@@ -55,7 +56,7 @@ const HeroText = () => {
                   visible:  { opacity: 1, y:   0 },
                 }}
                 transition={{ delay: 0.10, duration: 0.7, type: "spring", bounce: 0.45 }}
-                className="block text-5xl sm:text-7xl text-white"
+                className="block text-5xl sm:text-7xl"
                 style={{ fontFamily: "SuperMario" }}
               >
                 Let's
@@ -130,7 +131,7 @@ const HeroText = () => {
                   marginTop: "1.1rem",
                   fontSize: "0.7rem",
                   fontFamily: "'Share Tech Mono', monospace",
-                  color: "rgba(255,255,255,0.28)",
+                  color: "var(--text-secondary)",
                   letterSpacing: "0.22em",
                   textTransform: "uppercase",
                 }}
@@ -181,8 +182,8 @@ const HeroText = () => {
                   {name.split("").map((char, index) => (
                     <span
                       key={index}
-                      className="bounce text-white"
-                      style={{ fontSize: "1.2em" }}
+                      className="bounce"
+                      style={{ fontSize: "1.2em", color: "var(--text-primary)" }}
                     >
                       {char}
                     </span>

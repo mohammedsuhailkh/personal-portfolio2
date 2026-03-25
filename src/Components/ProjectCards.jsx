@@ -142,7 +142,7 @@ const ProjectCards = () => {
 
         .pc-section {
           font-family: 'DM Sans', sans-serif;
-          padding: 80px 0;
+          padding: 96px 24px 80px;
           position: relative;
         }
 
@@ -160,20 +160,25 @@ const ProjectCards = () => {
           overflow: hidden;
           cursor: pointer;
           transform-style: preserve-3d;
-          transition: transform 0.15s ease, box-shadow 0.3s ease;
-          background: linear-gradient(145deg, #1a1a2e, #16213e);
-          border: 1px solid rgba(255,255,255,0.08);
+          transition: transform 0.18s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+          background: var(--bg-surface);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid var(--border-glass);
           box-shadow:
-            0 10px 40px rgba(0,0,0,0.4),
-            0 1px 0 rgba(255,255,255,0.06) inset;
+            10px 10px 30px rgba(163,177,198,0.4),
+            -10px -10px 30px rgba(255,255,255,0.9),
+            inset 0 1px 0 rgba(255,255,255,1);
           will-change: transform;
         }
 
         .pc-card:hover {
+          border-color: rgba(255,138,0,0.35);
           box-shadow:
-            0 24px 60px rgba(0,0,0,0.6),
-            0 0 40px rgba(99,102,241,0.15),
-            0 1px 0 rgba(255,255,255,0.1) inset;
+            14px 14px 40px rgba(163,177,198,0.5),
+            -14px -14px 40px rgba(255,255,255,1),
+            0 0 0 1px rgba(255,138,0,0.15),
+            inset 0 1px 0 rgba(255,255,255,1);
         }
 
         .pc-card-inner {
@@ -203,7 +208,7 @@ const ProjectCards = () => {
         .pc-img-overlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(to top, rgba(15,12,41,0.9) 0%, transparent 60%);
+          background: linear-gradient(to top, rgba(230,233,240,0.8) 0%, transparent 60%);
           opacity: 0;
           transition: opacity 0.3s ease;
           display: flex;
@@ -219,8 +224,10 @@ const ProjectCards = () => {
           width: 54px;
           height: 54px;
           border-radius: 50%;
-          background: rgba(99,102,241,0.9);
-          border: 2px solid rgba(255,255,255,0.3);
+          background: var(--bg-surface);
+          border: 1px solid var(--border-glass);
+          color: var(--accent-1);
+          box-shadow: 4px 4px 10px rgba(163,177,198,0.4), -4px -4px 10px rgba(255,255,255,0.9);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -242,7 +249,7 @@ const ProjectCards = () => {
           font-family: 'Syne', sans-serif;
           font-size: 1.05rem;
           font-weight: 700;
-          color: #fff;
+          color: var(--text-primary);
           letter-spacing: 0.01em;
           display: flex;
           align-items: center;
@@ -253,9 +260,9 @@ const ProjectCards = () => {
           width: 6px;
           height: 6px;
           border-radius: 50%;
-          background: #6366f1;
+          background: var(--accent-1);
           flex-shrink: 0;
-          box-shadow: 0 0 8px #6366f1;
+          box-shadow: 0 0 8px var(--accent-1);
         }
 
         .pc-tag-row {
@@ -279,7 +286,7 @@ const ProjectCards = () => {
 
         .pc-click-hint {
           font-size: 0.72rem;
-          color: rgba(255,255,255,0.3);
+          color: var(--text-secondary);
           margin-top: 10px;
           letter-spacing: 0.03em;
           display: flex;
@@ -316,12 +323,14 @@ const ProjectCards = () => {
           max-height: 90vh;
           overflow-y: auto;
           border-radius: 24px;
-          background: linear-gradient(160deg, #0f0c29, #1a1a3e, #24243e);
-          border: 1px solid rgba(255,255,255,0.1);
+          background: rgba(242, 245, 250, 0.95);
+          backdrop-filter: blur(32px) saturate(1.6);
+          -webkit-backdrop-filter: blur(32px) saturate(1.6);
+          border: 1px solid var(--border-glass);
           box-shadow:
-            0 40px 100px rgba(0,0,0,0.7),
-            0 0 0 1px rgba(99,102,241,0.2),
-            0 0 80px rgba(99,102,241,0.08);
+            14px 14px 40px rgba(163,177,198,0.4),
+            -14px -14px 40px rgba(255,255,255,0.9),
+            inset 0 1px 0 rgba(255,255,255,1);
           transform: scale(0.85) translateY(30px);
           opacity: 0;
           animation: pcModalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s forwards;
@@ -358,8 +367,8 @@ const ProjectCards = () => {
           bottom: 0;
           left: 0;
           right: 0;
-          height: 120px;
-          background: linear-gradient(to top, #1a1a3e, transparent);
+          height: 140px;
+          background: linear-gradient(to top, rgba(242,245,250,0.95), transparent);
           pointer-events: none;
         }
 
@@ -370,21 +379,23 @@ const ProjectCards = () => {
           width: 36px;
           height: 36px;
           border-radius: 50%;
-          border: 1px solid rgba(255,255,255,0.2);
-          background: rgba(0,0,0,0.5);
-          color: #fff;
+          border: 1px solid var(--border-glass);
+          background: var(--bg-surface);
+          color: var(--text-primary);
+          box-shadow: 2px 2px 8px rgba(163,177,198,0.4);
           font-size: 1.1rem;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
           z-index: 10;
-          transition: background 0.2s, transform 0.2s;
-          backdrop-filter: blur(4px);
+          transition: background 0.2s, transform 0.2s, color 0.2s;
+          backdrop-filter: blur(8px);
         }
 
         .pc-modal-close:hover {
-          background: rgba(239,68,68,0.7);
+          background: rgba(255,255,255,1);
+          color: #ef4444;
           transform: scale(1.1) rotate(90deg);
         }
 
@@ -404,13 +415,13 @@ const ProjectCards = () => {
           font-family: 'Syne', sans-serif;
           font-size: 1.7rem;
           font-weight: 800;
-          color: #fff;
+          color: var(--text-primary);
           line-height: 1.2;
           letter-spacing: -0.02em;
         }
 
         .pc-modal-title span {
-          background: linear-gradient(90deg, #a5b4fc, #818cf8);
+          background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -418,7 +429,7 @@ const ProjectCards = () => {
 
         .pc-divider {
           height: 1px;
-          background: linear-gradient(90deg, rgba(99,102,241,0.5), transparent);
+          background: linear-gradient(90deg, rgba(255,138,0,0.5), transparent);
           margin: 20px 0;
         }
 
@@ -427,15 +438,15 @@ const ProjectCards = () => {
           font-weight: 600;
           letter-spacing: 0.15em;
           text-transform: uppercase;
-          color: #6366f1;
+          color: var(--accent-1);
           margin-bottom: 10px;
         }
 
         .pc-modal-desc {
           font-size: 0.97rem;
           line-height: 1.75;
-          color: rgba(210,210,230,0.85);
-          font-weight: 300;
+          color: var(--text-secondary);
+          font-weight: 400;
         }
 
         .pc-modal-actions {
@@ -467,23 +478,24 @@ const ProjectCards = () => {
         }
 
         .pc-btn-primary {
-          background: linear-gradient(135deg, #6366f1, #8b5cf6);
+          background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
           color: #fff;
-          box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+          box-shadow: 4px 4px 10px rgba(255,138,0,0.3);
         }
 
         .pc-btn-primary:hover {
-          box-shadow: 0 8px 30px rgba(99,102,241,0.5);
+          box-shadow: 6px 6px 14px rgba(255,138,0,0.4);
         }
 
         .pc-btn-secondary {
-          background: rgba(255,255,255,0.06);
-          color: rgba(255,255,255,0.8);
-          border: 1px solid rgba(255,255,255,0.12);
+          background: var(--bg-surface);
+          color: var(--text-primary);
+          border: 1px solid var(--border-glass);
+          box-shadow: 4px 4px 10px rgba(163,177,198,0.3);
         }
 
         .pc-btn-secondary:hover {
-          background: rgba(255,255,255,0.1);
+          background: rgba(255,255,255,0.8);
         }
 
         @media (max-width: 600px) {
@@ -513,8 +525,8 @@ const ProjectCards = () => {
                   <div className="pc-img-wrap">
                     <img src={project.image} alt={project.name} />
                     <div className="pc-img-overlay">
-                      <div className="pc-play-btn">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                      <div className="pc-play-btn" style={{ color: 'var(--accent-1)' }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M8 5v14l11-7z" />
                         </svg>
                       </div>

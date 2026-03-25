@@ -1,12 +1,3 @@
-/*
-   Copyright (C), 2023-2024, Sara Echeverria (bl33h)
-   Author: Sara Echeverria
-   FileName: Skills.jsx
-   Version: I
-   Creation: 02/06/2023
-   Last modification: 03/06/2023
-*/
-
 import MarqueeCards from "../Components/MarqueeCards";
 import SectionTitle from "../Components/SectionTitle";
 import SkillsCards from "../Components/SkillsCards";
@@ -15,22 +6,41 @@ const Skills = () => {
   return (
     <div id="skills" className="w-full overflow-hidden-web flex justify-center">
       <div className="w-full min-h-[800px] flex flex-col xl:w-[70%]">
+
+        {/* Section heading */}
         <div className="w-full">
           <SectionTitle title="SKILLS" subtitle="WHAT I DO" />
         </div>
-        <div className="xl:border-l-2 xl:border-r-2 xl:border-primary-400 h-full">
+
+        {/* Marquee container with glass side borders */}
+        <div className="skills-container-border h-full">
+
+          {/* Row 1 — left */}
           <div className="relative">
-            <div className="absolute top-[45px] w-full h-[1px] bg-primary-400"></div>
+            <div className="skills-track-line" />
             <MarqueeCards direction="left">
               <SkillsCards />
             </MarqueeCards>
           </div>
+
+          {/* Spacer glow divider */}
+          <div
+            style={{
+              height: "1px",
+              margin: "0 24px",
+              background:
+                "linear-gradient(90deg, transparent, rgba(99,102,241,0.3), rgba(34,211,238,0.2), transparent)",
+            }}
+          />
+
+          {/* Row 2 — right */}
           <div className="relative">
-            <div className="absolute top-[45px] w-full h-[1px] bg-primary-400"></div>
+            <div className="skills-track-line" />
             <MarqueeCards direction="right">
               <SkillsCards />
             </MarqueeCards>
           </div>
+
         </div>
       </div>
     </div>

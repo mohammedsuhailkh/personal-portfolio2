@@ -204,7 +204,8 @@ function drawTimer(ctx, W, timeLeft, pulse) {
   const col=urgent?"#ef4444":warn?"#facc15":"#00ffc8";
   const glow=urgent?"#ff000088":warn?"#facc1566":"#00ffc844";
   const scale=urgent?1+Math.sin(pulse*0.18)*0.09:1;
-  ctx.save();ctx.translate(W/2,52);ctx.scale(scale,scale);
+  const yPos = window.innerWidth <= 640 ? 85 : 95;
+  ctx.save();ctx.translate(W/2, yPos);ctx.scale(scale,scale);
   const pw=120,ph=44;
   ctx.fillStyle="rgba(4,8,16,0.75)";ctx.strokeStyle=col+"55";ctx.lineWidth=1.5;
   ctx.shadowColor=glow;ctx.shadowBlur=urgent?30:14;
@@ -274,27 +275,27 @@ function GunCard({ gun, index, isSelected, ammo, onSelect, disabled }) {
 
 function DesktopPanel({ selectedGun, gunAmmo, onSelectGun, onReload, kills, shots, hits, reloading, gameEnded, timeLeft }) {
   const urgent=timeLeft<=8&&!gameEnded;
-  const frame={padding:"12px 11px",background:"rgba(4,8,16,0.88)",border:"1px solid rgba(0,255,180,0.15)",clipPath:"polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))",backdropFilter:"blur(12px)"};
+  const frame={padding:"12px 11px",background:"var(--bg-surface)",border:"1px solid var(--border-glass)",boxShadow:"6px 6px 14px rgba(163,177,198,0.4),-6px -6px 14px rgba(255,255,255,0.8)",clipPath:"polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))",backdropFilter:"blur(12px)"};
   return (
     <div style={{position:"absolute",top:"50%",right:20,transform:"translateY(-50%)",width:190,zIndex:20,display:"flex",flexDirection:"column",gap:8,fontFamily:"'Share Tech Mono',monospace",opacity:gameEnded?0:1,transition:"opacity .9s",pointerEvents:gameEnded?"none":"auto"}}>
       <div style={frame}>
-        <div style={{fontSize:10,fontWeight:700,color:"rgba(0,255,180,0.65)",letterSpacing:".25em",marginBottom:10,paddingBottom:8,borderBottom:"1px solid rgba(0,255,180,0.1)",fontFamily:"'Orbitron',sans-serif",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div style={{fontSize:10,fontWeight:700,color:"var(--text-secondary)",letterSpacing:".25em",marginBottom:10,paddingBottom:8,borderBottom:"1px solid var(--border-glass)",fontFamily:"'Orbitron',sans-serif",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <span>ARSENAL</span>
-          {!gameEnded&&<span style={{fontSize:13,fontWeight:700,color:urgent?"#ef4444":timeLeft<=15?"#facc15":"#00ffc8",textShadow:urgent?"0 0 12px #ef4444":"none"}}>{Math.ceil(timeLeft)}s</span>}
+          {!gameEnded&&<span style={{fontSize:13,fontWeight:700,color:urgent?"#ef4444":timeLeft<=15?"var(--accent-1)":"var(--text-primary)",textShadow:urgent?"0 0 12px #ef4444":"none"}}>{Math.ceil(timeLeft)}s</span>}
         </div>
         {GUNS.map((gun,i)=>(
           <GunCard key={gun.id} gun={gun} index={i} isSelected={i===selectedGun} ammo={gunAmmo[i]} onSelect={onSelectGun} disabled={gameEnded}/>
         ))}
       </div>
       {!gameEnded&&(
-        <div onClick={onReload} style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"8px",gap:8,fontSize:11,color:reloading?"rgba(255,140,0,0.8)":"rgba(0,255,180,0.6)",letterSpacing:".15em",border:`1px solid ${reloading?"rgba(255,140,0,0.3)":"rgba(0,255,180,0.15)"}`,borderRadius:2,cursor:"pointer",background:reloading?"rgba(255,140,0,0.05)":"rgba(0,255,180,0.02)"}}>
+        <div onClick={onReload} style={{display:"flex",alignItems:"center",justifyContent:"center",padding:"8px",gap:8,fontSize:11,color:reloading?"var(--accent-1)":"var(--text-primary)",letterSpacing:".15em",border:`1px solid ${reloading?"var(--accent-1)":"var(--border-glass)"}`,borderRadius:2,cursor:"pointer",background:reloading?"rgba(255,138,0,0.1)":"var(--bg-surface)",boxShadow:"4px 4px 10px rgba(163,177,198,0.3)"}}>
           [ R ]&nbsp;&nbsp;{reloading?"RELOADING…":"RELOAD"}
         </div>
       )}
       <div style={{...frame,padding:"9px 11px"}}>
         {[["DESTROYED",kills],["ACCURACY",shots>0?Math.round(hits/shots*100)+"%":"—"],["SHOTS",shots]].map(([label,val])=>(
-          <div key={label} style={{display:"flex",justifyContent:"space-between",fontSize:10,color:"rgba(255,255,255,0.3)",padding:"2px 0"}}>
-            <span>{label}</span><span style={{color:"#00ffc8"}}>{val}</span>
+          <div key={label} style={{display:"flex",justifyContent:"space-between",fontSize:10,color:"var(--text-secondary)",padding:"2px 0"}}>
+            <span>{label}</span><span style={{color:"var(--accent-1)"}}>{val}</span>
           </div>
         ))}
       </div>
@@ -308,14 +309,15 @@ function DesktopPanel({ selectedGun, gunAmmo, onSelectGun, onReload, kills, shot
 function MobileHUD({ selectedGun, gunAmmo, onSelectGun, onReload, onFire, kills, reloading, gameEnded, timeLeft }) {
   const g     = GUNS[selectedGun];
   const urgent = timeLeft <= 8 && !gameEnded;
-  const timerCol = urgent ? "#ef4444" : timeLeft <= 15 ? "#facc15" : "#00ffc8";
+  const timerCol = urgent ? "#ef4444" : timeLeft <= 15 ? "var(--accent-2)" : "var(--accent-1)";
 
   return (
     <div style={{
       position:"absolute", bottom:0, left:0, right:0, zIndex:20,
       height: MOBILE_HUD_H,
-      background:"rgba(4,8,16,0.92)",
-      borderTop:"1px solid rgba(0,255,180,0.18)",
+      background:"rgba(242,245,250,0.92)",
+      borderTop:"1px solid var(--border-glass)",
+      boxShadow:"0 -4px 16px rgba(163,177,198,0.2)",
       backdropFilter:"blur(16px)",
       display:"flex", flexDirection:"column",
       opacity: gameEnded ? 0 : 1,
@@ -347,9 +349,9 @@ function MobileHUD({ selectedGun, gunAmmo, onSelectGun, onReload, onFire, kills,
                   flexShrink:0,
                   minWidth: sel ? 72 : 52,
                   padding: sel ? "5px 8px" : "5px 6px",
-                  border:`1px solid ${sel ? gun.col : "rgba(255,255,255,0.1)"}`,
+                  border:`1px solid ${sel ? gun.col : "var(--border-glass)"}`,
                   borderRadius:4,
-                  background: sel ? `${gun.col}18` : "rgba(0,0,0,0.3)",
+                  background: sel ? `${gun.col}18` : "rgba(255,255,255,0.5)",
                   cursor:"pointer",
                   transition:"all .15s",
                   opacity: empty ? 0.45 : 1,
@@ -358,11 +360,11 @@ function MobileHUD({ selectedGun, gunAmmo, onSelectGun, onReload, onFire, kills,
                 }}
               >
                 {sel && <div style={{position:"absolute",top:0,left:0,right:0,height:2,background:gun.col,boxShadow:`0 0 6px ${gun.col}`}}/>}
-                <div style={{fontSize:10,fontWeight:700,color:sel?gun.col:"rgba(255,255,255,0.6)",fontFamily:"'Share Tech Mono',monospace",letterSpacing:".04em",whiteSpace:"nowrap"}}>
+                <div style={{fontSize:10,fontWeight:700,color:sel?gun.col:"var(--text-secondary)",fontFamily:"'Share Tech Mono',monospace",letterSpacing:".04em",whiteSpace:"nowrap"}}>
                   {sel ? gun.shortName : gun.emoji}
                 </div>
                 {sel && (
-                  <div style={{fontSize:9,color:"rgba(255,255,255,0.4)",fontFamily:"'Share Tech Mono',monospace",marginTop:1}}>
+                  <div style={{fontSize:9,color:"var(--text-secondary)",fontFamily:"'Share Tech Mono',monospace",marginTop:1}}>
                     {gun.maxAmmo <= 15
                       ? `${"▪".repeat(ammo)}${"·".repeat(Math.max(0,gun.maxAmmo-ammo))}`.slice(0,10)
                       : `${ammo}/${gun.maxAmmo}`}
@@ -377,16 +379,17 @@ function MobileHUD({ selectedGun, gunAmmo, onSelectGun, onReload, onFire, kills,
         <div style={{
           flexShrink:0,
           width:52, height:42,
-          border:`1px solid ${timerCol}44`,
+          border:`1px solid var(--border-glass)`,
           borderRadius:6,
-          background:"rgba(0,0,0,0.5)",
+          background:"var(--bg-surface)",
+          boxShadow:"inset 2px 2px 4px rgba(163,177,198,0.3)",
           display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
           gap:1,
         }}>
           <span style={{fontSize:18,fontWeight:700,color:timerCol,fontFamily:"'Share Tech Mono',monospace",lineHeight:1,textShadow:urgent?`0 0 12px ${timerCol}`:"none"}}>
             {Math.ceil(timeLeft)}
           </span>
-          <span style={{fontSize:7,color:timerCol+"88",fontFamily:"'Share Tech Mono',monospace",letterSpacing:".1em"}}>SEC</span>
+          <span style={{fontSize:7,color:"var(--text-secondary)",fontFamily:"'Share Tech Mono',monospace",letterSpacing:".1em"}}>SEC</span>
         </div>
       </div>
 
@@ -398,14 +401,15 @@ function MobileHUD({ selectedGun, gunAmmo, onSelectGun, onReload, onFire, kills,
       }}>
         {/* Score */}
         <div style={{flex:1, display:"flex", flexDirection:"column", gap:1}}>
-          <span style={{fontSize:9,color:"rgba(255,255,255,0.3)",fontFamily:"'Share Tech Mono',monospace",letterSpacing:".1em"}}>DESTROYED</span>
-          <span style={{fontSize:15,fontWeight:700,color:"#00ffc8",fontFamily:"'Share Tech Mono',monospace"}}>{kills}</span>
+          <span style={{fontSize:9,color:"var(--text-secondary)",fontFamily:"'Share Tech Mono',monospace",letterSpacing:".1em"}}>DESTROYED</span>
+          <span style={{fontSize:15,fontWeight:700,color:"var(--text-primary)",fontFamily:"'Share Tech Mono',monospace"}}>{kills}</span>
         </div>
 
         {/* Gun mode label */}
         <div style={{
           fontSize:9, color:g.col, fontFamily:"'Share Tech Mono',monospace",
           letterSpacing:".1em", border:`1px solid ${g.col}44`,
+          background:"var(--bg-surface)",
           padding:"2px 6px", borderRadius:3, flexShrink:0,
         }}>
           {g.mode}
@@ -416,10 +420,11 @@ function MobileHUD({ selectedGun, gunAmmo, onSelectGun, onReload, onFire, kills,
           onClick={onReload}
           style={{
             padding:"6px 10px",
-            background: reloading ? "rgba(255,140,0,0.1)" : "rgba(0,255,180,0.07)",
-            border:`1px solid ${reloading?"rgba(255,140,0,0.4)":"rgba(0,255,180,0.25)"}`,
+            background: reloading ? "rgba(255,138,0,0.1)" : "var(--bg-surface)",
+            border:`1px solid ${reloading?"var(--accent-1)":"var(--border-glass)"}`,
+            boxShadow:"2px 2px 6px rgba(163,177,198,0.2)",
             borderRadius:4, cursor:"pointer",
-            color: reloading ? "rgba(255,140,0,0.9)" : "rgba(0,255,180,0.7)",
+            color: reloading ? "var(--accent-1)" : "var(--text-secondary)",
             fontSize:10, fontFamily:"'Share Tech Mono',monospace",
             letterSpacing:".1em", flexShrink:0,
             WebkitTapHighlightColor:"transparent",
