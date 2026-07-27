@@ -35,6 +35,8 @@ import towerbash from './projects/towerbash.png';
 import dumbledash from './projects/dumbledash.png';
 import downtown from './projects/downtown.png';
 import os from './projects/OS.png';
+import farming_camp from './projects/Farming_camp.png';
+import mirthIsland from './projects/MirthIsland.jpg';
 
 
 // Avatar
@@ -71,5 +73,7 @@ export {
   towerbash,
   dumbledash,
   downtown,
-  os
+  os,
+  farming_camp,
+  mirthIsland
 };

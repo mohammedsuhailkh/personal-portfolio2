@@ -42,7 +42,9 @@ import {
   towerbash,
   dumbledash,
   downtown,
-  os
+  os,
+  farming_camp,
+  mirthIsland
 } from '../assets';
 
 library.add(faX, faBars, faWindowRestore, faBagShopping, faDiceD6);
@@ -75,11 +77,11 @@ const icons = {
 
 const introduction = {
   text: [
-    "Hello there, I'm so happy you are here! (:",
+    "Hey there, welcome to my corner of the internet! (:",
 
-    "Hello! My name is Suhail, Im a freelance developer and a  cyber security enthusiast ,I enjoy creating things that live on the internet." ,
-    " My interest in web development started back in 2018 when I decided to try editing custom Tumblr themes — turns out hacking together a custom reblog button had bought in me a lot of interest in cyber security and web developement.",
-    " My main focus these days is building accessible, inclusive products and securing the internet for a safer digital world."
+    "I'm Suhail — an experienced Unity developer specializing in cross-platform game development and porting across PS5, Xbox, Nintendo Switch, and PC. I've shipped multiple commercial titles, handling everything from platform-specific optimizations and save systems to full gameplay implementation.",
+    "Beyond game development, I have a solid foundation in backend engineering and modern web frameworks. I work with Node.js, React, and Firebase to build full-stack applications, and I'm comfortable architecting REST APIs, managing cloud infrastructure, and deploying scalable web services.",
+    "My passion lies in building polished, high-performance experiences — whether that's a game running at 60fps on console hardware or a sleek web app with a seamless user experience."
 
   ],
 };
@@ -104,6 +106,22 @@ export const navLinks = [
 ];
 
 const projects = [
+{
+  name: "Farming Camp (PS5 / MS / XBOX)",
+  description: "Farming Camp is a farming simulation game where I worked on porting the game to PS5, Microsoft Store, and Xbox platforms. I implemented the complete demo-to-save migration system, enabling players to seamlessly carry over their progress from the demo version to the full game. I also built the cloud save access system across Microsoft Store and Xbox, ensuring save data synchronization and Xbox Play Anywhere compliance for a smooth cross-platform experience.",
+  image: farming_camp,
+  video_link: "FarmingCamp.mp4",
+  source_code_link: "https://github.com/mohammedsuhailkh/",
+  demo_link: "",
+},
+{
+  name: "Mirth Island (PS5 / NINTENDO SWITCH)",
+  description: "Mirth Island is a cozy life-simulation game that I ported to PS5 and Nintendo Switch. I optimized the game for each platform's hardware capabilities, implemented platform-based code changes for input handling, rendering, and system APIs, and built the save data system with platform-specific storage integration to ensure reliable progress persistence across both consoles.",
+  image: mirthIsland,
+  video_link: "MirthIsland.mp4",
+  source_code_link: "https://github.com/mohammedsuhailkh/",
+  demo_link: "",
+},
 {
   name: "Valeria (In Production)",
   description: "Valeria is a survival-action game fully designed and developed by me as a solo project. I implemented all core gameplay systems including player movement and combat mechanics, survival systems, enemy AI behaviors, interaction systems, game progression logic, UI implementation, and environment setup. The project showcases my ability to independently build complete gameplay mechanics and integrate them into a cohesive survival experience using Unity.",
